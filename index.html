@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Pathfinding Visualization</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1 class="app-title">
+                    <span class="icon">🗺️</span>
+                    Advanced Pathfinding
+                </h1>
+                <div class="header-controls">
+                    <button id="themeToggle" class="theme-toggle" title="Toggle Dark Mode">
+                        <span class="theme-icon">🌙</span>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Control Panel -->
+            <div class="control-panel">
+                <div class="panel-section">
+                    <h3 class="section-title">Route Planning</h3>
+                    
+                    <!-- Start Location -->
+                    <div class="input-group">
+                        <label class="input-label">Start Location</label>
+                        <div class="input-wrapper">
+                            <input type="text" id="startAddress" class="location-input" placeholder="Enter start address">
+                            <button id="currentLocation" class="current-location-btn" title="Use Current Location">
+                                <span class="btn-icon">📍</span>
+                            </button>
+                        </div>
+                        <div id="startSuggestions" class="autocomplete-suggestions"></div>
+                    </div>
+
+                    <!-- End Location -->
+                    <div class="input-group">
+                        <label class="input-label">End Location</label>
+                        <div class="input-wrapper">
+                            <input type="text" id="endAddress" class="location-input" placeholder="Enter destination address">
+                        </div>
+                        <div id="endSuggestions" class="autocomplete-suggestions"></div>
+                    </div>
+
+                    <!-- Travel Mode -->
+                    <div class="input-group">
+                        <label class="input-label">Travel Mode</label>
+                        <select id="travelMode" class="travel-mode-select">
+                            <option value="foot">🚶 Walking</option>
+                            <option value="cycling">🚴 Cycling</option>
+                            <option value="driving">🚗 Driving</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Algorithm Selection -->
+                <div class="panel-section">
+                    <h3 class="section-title">Pathfinding Algorithms</h3>
+                    <div class="algorithm-buttons">
+                        <button id="dijkstra" class="algorithm-btn dijkstra-btn">
+                            <span class="btn-icon">🔍</span>
+                            Dijkstra's Algorithm
+                        </button>
+                        <button id="astar" class="algorithm-btn astar-btn">
+                            <span class="btn-icon">⭐</span>
+                            A* Algorithm
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Waypoint Controls -->
+                <div class="panel-section">
+                    <h3 class="section-title">Waypoints</h3>
+                    <div class="waypoint-controls">
+                        <button id="addWaypoint" class="waypoint-btn add-waypoint">
+                            <span class="btn-icon">➕</span>
+                            Add Waypoint
+                        </button>
+                        <button id="clearWaypoints" class="waypoint-btn clear-waypoints">
+                            <span class="btn-icon">🗑️</span>
+                            Clear All
+                        </button>
+                    </div>
+                    <div id="waypointList" class="waypoint-list"></div>
+                </div>
+
+                <!-- Route Info -->
+                <div class="panel-section">
+                    <h3 class="section-title">Route Information</h3>
+                    <div id="routeInfo" class="route-info">
+                        <div class="info-item">
+                            <span class="info-label">Distance:</span>
+                            <span id="routeDistance" class="info-value">--</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Duration:</span>
+                            <span id="routeDuration" class="info-value">--</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Est. Time:</span>
+                            <span id="estimatedTime" class="info-value">--</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Map Container -->
+            <div class="map-container">
+                <div id="map" class="map"></div>
+                <div id="loadingOverlay" class="loading-overlay">
+                    <div class="loading-spinner"></div>
+                    <p class="loading-text">Calculating route...</p>
+                </div>
+            </div>
+        </main>
+
+        <!-- Directions Panel -->
+        <div id="directionsPanel" class="directions-panel">
+            <div class="directions-header">
+                <h3 class="directions-title">Turn-by-Turn Directions</h3>
+                <button id="closeDirections" class="close-directions">✕</button>
+            </div>
+            <div id="directions" class="directions-content"></div>
+        </div>
+
+        <!-- Status Messages -->
+        <div id="statusMessages" class="status-messages"></div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
+    <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+    <script src="pathfinding.js"></script>
+    <script src="ui.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
