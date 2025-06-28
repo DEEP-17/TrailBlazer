@@ -6,6 +6,9 @@ let waypoints = [];
 let routingControl = null;
 let isAddingWaypoint = false;
 let currentAlgorithm = null;
+let isSidebarCollapsed = false;
+let isDirectionsCollapsed = true;
+let currentTileLayer = null;
 
 // Initialize the application
 document.addEventListener('DOMContentLoaded', function() {
@@ -13,26 +16,110 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeEventListeners();
     initializeAutocomplete();
     initializeTheme();
+    initializeToggleControls();
 });
+
+// Initialize toggle controls
+function initializeToggleControls() {
+    // Sidebar toggle
+    document.getElementById('sidebarToggle').addEventListener('click', function() {
+        toggleSidebar();
+    });
+
+    // Directions toggle
+    document.getElementById('directionsToggle').addEventListener('click', function() {
+        toggleDirections();
+    });
+}
+
+// Toggle sidebar
+function toggleSidebar() {
+    const controlPanel = document.getElementById('controlPanel');
+    const appTitle = document.querySelector('.app-title');
+    const directionsPanel = document.getElementById('directionsPanel');
+    
+    isSidebarCollapsed = !isSidebarCollapsed;
+    
+    if (isSidebarCollapsed) {
+        controlPanel.classList.add('collapsed');
+        appTitle.style.opacity = '0';
+        // Update directions panel position
+        directionsPanel.style.left = 'var(--sidebar-collapsed-width)';
+    } else {
+        controlPanel.classList.remove('collapsed');
+        appTitle.style.opacity = '1';
+        // Update directions panel position
+        directionsPanel.style.left = 'var(--sidebar-width)';
+    }
+    
+    // Trigger map resize after animation
+    setTimeout(() => {
+        if (map) {
+            map.invalidateSize();
+        }
+    }, 300);
+}
+
+// Toggle directions panel
+function toggleDirections() {
+    const directionsPanel = document.getElementById('directionsPanel');
+    const toggleIcon = document.querySelector('.directions-toggle-icon');
+    
+    isDirectionsCollapsed = !isDirectionsCollapsed;
+    
+    if (isDirectionsCollapsed) {
+        directionsPanel.classList.add('collapsed');
+        directionsPanel.classList.remove('show');
+        toggleIcon.textContent = '▲';
+    } else {
+        directionsPanel.classList.remove('collapsed');
+        directionsPanel.classList.add('show');
+        toggleIcon.textContent = '▼';
+    }
+}
 
 // Initialize the map
 function initializeMap() {
     map = L.map('map').setView([40.7128, -74.0060], 13);
     
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 19,
-        attribution: '© OpenStreetMap contributors'
-    }).addTo(map);
+    // Initialize with light theme tiles
+    updateMapTiles();
 
     // Add click event for adding waypoints
     map.on('click', function(e) {
         if (isAddingWaypoint) {
             addWaypoint([e.latlng.lat, e.latlng.lng]);
             isAddingWaypoint = false;
-            document.getElementById('addWaypoint').innerHTML = '<span class="btn-icon">➕</span>Add Waypoint';
+            document.getElementById('addWaypoint').innerHTML = '<span class="btn-icon">➕</span><span class="btn-text">Add Waypoint</span>';
             showStatusMessage('Waypoint added successfully', 'success');
         }
     });
+}
+
+// Update map tiles based on theme
+function updateMapTiles() {
+    const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+    
+    // Remove existing tile layer
+    if (currentTileLayer) {
+        map.removeLayer(currentTileLayer);
+    }
+    
+    // Add appropriate tile layer based on theme
+    if (currentTheme === 'dark') {
+        // Use CartoDB Dark Matter tiles (free, no API key required)
+        currentTileLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+            maxZoom: 19,
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+            subdomains: 'abcd'
+        }).addTo(map);
+    } else {
+        // Use standard light map tiles
+        currentTileLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+    }
 }
 
 // Initialize event listeners
@@ -68,11 +155,11 @@ function initializeEventListeners() {
     document.getElementById('addWaypoint').addEventListener('click', function() {
         if (!isAddingWaypoint) {
             isAddingWaypoint = true;
-            this.innerHTML = '<span class="btn-icon">🎯</span>Click on map to add waypoint';
+            this.innerHTML = '<span class="btn-icon">🎯</span><span class="btn-text">Click on map to add waypoint</span>';
             showStatusMessage('Click on the map to add a waypoint', 'warning');
         } else {
             isAddingWaypoint = false;
-            this.innerHTML = '<span class="btn-icon">➕</span>Add Waypoint';
+            this.innerHTML = '<span class="btn-icon">➕</span><span class="btn-text">Add Waypoint</span>';
         }
     });
 
@@ -86,11 +173,6 @@ function initializeEventListeners() {
         if (routingControl) {
             updateRoute();
         }
-    });
-
-    // Directions panel
-    document.getElementById('closeDirections').addEventListener('click', function() {
-        hideDirections();
     });
 }
 
@@ -387,12 +469,10 @@ function displayDirections(route) {
 
 // Show directions panel
 function showDirections() {
-    document.getElementById('directionsPanel').classList.add('show');
-}
-
-// Hide directions panel
-function hideDirections() {
-    document.getElementById('directionsPanel').classList.remove('show');
+    const directionsPanel = document.getElementById('directionsPanel');
+    directionsPanel.classList.add('show');
+    isDirectionsCollapsed = false;
+    document.querySelector('.directions-toggle-icon').textContent = '▼';
 }
 
 // Create custom marker icons
@@ -517,6 +597,9 @@ function initializeTheme() {
         document.documentElement.setAttribute('data-theme', newTheme);
         localStorage.setItem('theme', newTheme);
         updateThemeIcon(newTheme);
+        
+        // Update map tiles when theme changes
+        updateMapTiles();
     });
 }
 

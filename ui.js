@@ -3,6 +3,8 @@ class UIManager {
     constructor() {
         this.currentTheme = localStorage.getItem('theme') || 'light';
         this.statusMessageTimeout = null;
+        this.isSidebarCollapsed = false;
+        this.isDirectionsCollapsed = true;
     }
 
     // Initialize theme
@@ -31,6 +33,56 @@ class UIManager {
         if (themeIcon) {
             themeIcon.textContent = this.currentTheme === 'light' ? '🌙' : '☀️';
         }
+    }
+
+    // Toggle sidebar
+    toggleSidebar() {
+        const controlPanel = document.getElementById('controlPanel');
+        const appTitle = document.querySelector('.app-title');
+        
+        this.isSidebarCollapsed = !this.isSidebarCollapsed;
+        
+        if (this.isSidebarCollapsed) {
+            controlPanel.classList.add('collapsed');
+            if (appTitle) appTitle.style.opacity = '0';
+        } else {
+            controlPanel.classList.remove('collapsed');
+            if (appTitle) appTitle.style.opacity = '1';
+        }
+        
+        // Trigger map resize after animation
+        setTimeout(() => {
+            if (window.map) {
+                window.map.invalidateSize();
+            }
+        }, 300);
+    }
+
+    // Toggle directions panel
+    toggleDirections() {
+        const directionsPanel = document.getElementById('directionsPanel');
+        const toggleIcon = document.querySelector('.directions-toggle-icon');
+        
+        this.isDirectionsCollapsed = !this.isDirectionsCollapsed;
+        
+        if (this.isDirectionsCollapsed) {
+            directionsPanel.classList.add('collapsed');
+            directionsPanel.classList.remove('show');
+            if (toggleIcon) toggleIcon.textContent = '▲';
+        } else {
+            directionsPanel.classList.remove('collapsed');
+            directionsPanel.classList.add('show');
+            if (toggleIcon) toggleIcon.textContent = '▼';
+        }
+    }
+
+    // Show directions panel
+    showDirections() {
+        const directionsPanel = document.getElementById('directionsPanel');
+        directionsPanel.classList.add('show');
+        this.isDirectionsCollapsed = false;
+        const toggleIcon = document.querySelector('.directions-toggle-icon');
+        if (toggleIcon) toggleIcon.textContent = '▼';
     }
 
     // Show status message
@@ -91,13 +143,13 @@ class UIManager {
         if (isCalculating) {
             dijkstraBtn.disabled = true;
             astarBtn.disabled = true;
-            dijkstraBtn.innerHTML = '<span class="btn-icon">🔄</span>Calculating...';
-            astarBtn.innerHTML = '<span class="btn-icon">🔄</span>Calculating...';
+            dijkstraBtn.innerHTML = '<span class="btn-icon">🔄</span><span class="btn-text">Calculating...</span>';
+            astarBtn.innerHTML = '<span class="btn-icon">🔄</span><span class="btn-text">Calculating...</span>';
         } else {
             dijkstraBtn.disabled = !hasRoute;
             astarBtn.disabled = !hasRoute;
-            dijkstraBtn.innerHTML = '<span class="btn-icon">🔍</span>Dijkstra\'s Algorithm';
-            astarBtn.innerHTML = '<span class="btn-icon">⭐</span>A* Algorithm';
+            dijkstraBtn.innerHTML = '<span class="btn-icon">🔍</span><span class="btn-text">Dijkstra\'s Algorithm</span>';
+            astarBtn.innerHTML = '<span class="btn-icon">⭐</span><span class="btn-text">A* Algorithm</span>';
         }
     }
 
@@ -139,16 +191,6 @@ class UIManager {
             dijkstraBtn.classList.add('active');
         } else if (algorithm === 'astar') {
             astarBtn.classList.add('active');
-        }
-    }
-
-    // Show/hide directions panel
-    toggleDirectionsPanel(show) {
-        const panel = document.getElementById('directionsPanel');
-        if (show) {
-            panel.classList.add('show');
-        } else {
-            panel.classList.remove('show');
         }
     }
 
@@ -226,11 +268,20 @@ class UIManager {
         const directionsPanel = document.getElementById('directionsPanel');
         
         if (isMobile) {
-            controlPanel.style.maxHeight = '50vh';
-            directionsPanel.style.left = '0';
+            if (controlPanel) {
+                controlPanel.style.maxHeight = this.isSidebarCollapsed ? '60px' : '50vh';
+            }
+            if (directionsPanel) {
+                directionsPanel.style.left = '0';
+            }
         } else {
-            controlPanel.style.maxHeight = '';
-            directionsPanel.style.left = '350px';
+            if (controlPanel) {
+                controlPanel.style.maxHeight = '';
+            }
+            if (directionsPanel) {
+                const sidebarWidth = this.isSidebarCollapsed ? 'var(--sidebar-collapsed-width)' : 'var(--sidebar-width)';
+                directionsPanel.style.left = sidebarWidth;
+            }
         }
     }
 }

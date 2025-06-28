@@ -15,10 +15,15 @@
         <!-- Header -->
         <header class="header">
             <div class="header-content">
-                <h1 class="app-title">
-                    <span class="icon">🗺️</span>
-                    Advanced Pathfinding
-                </h1>
+                <div class="header-left">
+                    <button id="sidebarToggle" class="sidebar-toggle" title="Toggle Sidebar">
+                        <span class="toggle-icon">☰</span>
+                    </button>
+                    <h1 class="app-title">
+                        <span class="icon">🗺️</span>
+                        Advanced Pathfinding
+                    </h1>
+                </div>
                 <div class="header-controls">
                     <button id="themeToggle" class="theme-toggle" title="Toggle Dark Mode">
                         <span class="theme-icon">🌙</span>
@@ -30,88 +35,90 @@
         <!-- Main Content -->
         <main class="main-content">
             <!-- Control Panel -->
-            <div class="control-panel">
-                <div class="panel-section">
-                    <h3 class="section-title">Route Planning</h3>
-                    
-                    <!-- Start Location -->
-                    <div class="input-group">
-                        <label class="input-label">Start Location</label>
-                        <div class="input-wrapper">
-                            <input type="text" id="startAddress" class="location-input" placeholder="Enter start address">
-                            <button id="currentLocation" class="current-location-btn" title="Use Current Location">
-                                <span class="btn-icon">📍</span>
+            <div class="control-panel" id="controlPanel">
+                <div class="panel-content">
+                    <div class="panel-section">
+                        <h3 class="section-title">Route Planning</h3>
+                        
+                        <!-- Start Location -->
+                        <div class="input-group">
+                            <label class="input-label">Start Location</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="startAddress" class="location-input" placeholder="Enter start address">
+                                <button id="currentLocation" class="current-location-btn" title="Use Current Location">
+                                    <span class="btn-icon">📍</span>
+                                </button>
+                            </div>
+                            <div id="startSuggestions" class="autocomplete-suggestions"></div>
+                        </div>
+
+                        <!-- End Location -->
+                        <div class="input-group">
+                            <label class="input-label">End Location</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="endAddress" class="location-input" placeholder="Enter destination address">
+                            </div>
+                            <div id="endSuggestions" class="autocomplete-suggestions"></div>
+                        </div>
+
+                        <!-- Travel Mode -->
+                        <div class="input-group">
+                            <label class="input-label">Travel Mode</label>
+                            <select id="travelMode" class="travel-mode-select">
+                                <option value="foot">🚶 Walking</option>
+                                <option value="cycling">🚴 Cycling</option>
+                                <option value="driving">🚗 Driving</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Algorithm Selection -->
+                    <div class="panel-section">
+                        <h3 class="section-title">Pathfinding Algorithms</h3>
+                        <div class="algorithm-buttons">
+                            <button id="dijkstra" class="algorithm-btn dijkstra-btn">
+                                <span class="btn-icon">🔍</span>
+                                <span class="btn-text">Dijkstra's Algorithm</span>
+                            </button>
+                            <button id="astar" class="algorithm-btn astar-btn">
+                                <span class="btn-icon">⭐</span>
+                                <span class="btn-text">A* Algorithm</span>
                             </button>
                         </div>
-                        <div id="startSuggestions" class="autocomplete-suggestions"></div>
                     </div>
 
-                    <!-- End Location -->
-                    <div class="input-group">
-                        <label class="input-label">End Location</label>
-                        <div class="input-wrapper">
-                            <input type="text" id="endAddress" class="location-input" placeholder="Enter destination address">
+                    <!-- Waypoint Controls -->
+                    <div class="panel-section">
+                        <h3 class="section-title">Waypoints</h3>
+                        <div class="waypoint-controls">
+                            <button id="addWaypoint" class="waypoint-btn add-waypoint">
+                                <span class="btn-icon">➕</span>
+                                <span class="btn-text">Add Waypoint</span>
+                            </button>
+                            <button id="clearWaypoints" class="waypoint-btn clear-waypoints">
+                                <span class="btn-icon">🗑️</span>
+                                <span class="btn-text">Clear All</span>
+                            </button>
                         </div>
-                        <div id="endSuggestions" class="autocomplete-suggestions"></div>
+                        <div id="waypointList" class="waypoint-list"></div>
                     </div>
 
-                    <!-- Travel Mode -->
-                    <div class="input-group">
-                        <label class="input-label">Travel Mode</label>
-                        <select id="travelMode" class="travel-mode-select">
-                            <option value="foot">🚶 Walking</option>
-                            <option value="cycling">🚴 Cycling</option>
-                            <option value="driving">🚗 Driving</option>
-                        </select>
-                    </div>
-                </div>
-
-                <!-- Algorithm Selection -->
-                <div class="panel-section">
-                    <h3 class="section-title">Pathfinding Algorithms</h3>
-                    <div class="algorithm-buttons">
-                        <button id="dijkstra" class="algorithm-btn dijkstra-btn">
-                            <span class="btn-icon">🔍</span>
-                            Dijkstra's Algorithm
-                        </button>
-                        <button id="astar" class="algorithm-btn astar-btn">
-                            <span class="btn-icon">⭐</span>
-                            A* Algorithm
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Waypoint Controls -->
-                <div class="panel-section">
-                    <h3 class="section-title">Waypoints</h3>
-                    <div class="waypoint-controls">
-                        <button id="addWaypoint" class="waypoint-btn add-waypoint">
-                            <span class="btn-icon">➕</span>
-                            Add Waypoint
-                        </button>
-                        <button id="clearWaypoints" class="waypoint-btn clear-waypoints">
-                            <span class="btn-icon">🗑️</span>
-                            Clear All
-                        </button>
-                    </div>
-                    <div id="waypointList" class="waypoint-list"></div>
-                </div>
-
-                <!-- Route Info -->
-                <div class="panel-section">
-                    <h3 class="section-title">Route Information</h3>
-                    <div id="routeInfo" class="route-info">
-                        <div class="info-item">
-                            <span class="info-label">Distance:</span>
-                            <span id="routeDistance" class="info-value">--</span>
-                        </div>
-                        <div class="info-item">
-                            <span class="info-label">Duration:</span>
-                            <span id="routeDuration" class="info-value">--</span>
-                        </div>
-                        <div class="info-item">
-                            <span class="info-label">Est. Time:</span>
-                            <span id="estimatedTime" class="info-value">--</span>
+                    <!-- Route Info -->
+                    <div class="panel-section">
+                        <h3 class="section-title">Route Information</h3>
+                        <div id="routeInfo" class="route-info">
+                            <div class="info-item">
+                                <span class="info-label">Distance:</span>
+                                <span id="routeDistance" class="info-value">--</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Duration:</span>
+                                <span id="routeDuration" class="info-value">--</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Est. Time:</span>
+                                <span id="estimatedTime" class="info-value">--</span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -131,9 +138,13 @@
         <div id="directionsPanel" class="directions-panel">
             <div class="directions-header">
                 <h3 class="directions-title">Turn-by-Turn Directions</h3>
-                <button id="closeDirections" class="close-directions">✕</button>
+                <button id="directionsToggle" class="directions-toggle" title="Expand/Collapse Directions">
+                    <span class="directions-toggle-icon">▲</span>
+                </button>
             </div>
-            <div id="directions" class="directions-content"></div>
+            <div id="directionsContent" class="directions-content">
+                <div id="directions" class="directions-list"></div>
+            </div>
         </div>
 
         <!-- Status Messages -->
