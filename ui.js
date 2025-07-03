@@ -138,18 +138,18 @@ class UIManager {
     // Update control panel based on route state
     updateControlPanel(hasRoute, isCalculating = false) {
         const dijkstraBtn = document.getElementById('dijkstra');
-        const astarBtn = document.getElementById('astar');
+        // const astarBtn = document.getElementById('astar');
         
         if (isCalculating) {
             dijkstraBtn.disabled = true;
-            astarBtn.disabled = true;
+            // astarBtn.disabled = true;
             dijkstraBtn.innerHTML = '<span class="btn-icon">🔄</span><span class="btn-text">Calculating...</span>';
-            astarBtn.innerHTML = '<span class="btn-icon">🔄</span><span class="btn-text">Calculating...</span>';
+            // astarBtn.innerHTML = '<span class="btn-icon">🔄</span><span class="btn-text">Calculating...</span>';
         } else {
             dijkstraBtn.disabled = !hasRoute;
-            astarBtn.disabled = !hasRoute;
+            // astarBtn.disabled = !hasRoute;
             dijkstraBtn.innerHTML = '<span class="btn-icon">🔍</span><span class="btn-text">Dijkstra\'s Algorithm</span>';
-            astarBtn.innerHTML = '<span class="btn-icon">⭐</span><span class="btn-text">A* Algorithm</span>';
+            // astarBtn.innerHTML = '<span class="btn-icon">⭐</span><span class="btn-text">A* Algorithm</span>';
         }
     }
 
@@ -180,17 +180,15 @@ class UIManager {
     // Highlight active algorithm button
     highlightActiveAlgorithm(algorithm) {
         const dijkstraBtn = document.getElementById('dijkstra');
-        const astarBtn = document.getElementById('astar');
+        // const astarBtn = document.getElementById('astar');
         
         // Remove active class from both
         dijkstraBtn.classList.remove('active');
-        astarBtn.classList.remove('active');
+        // astarBtn.classList.remove('active');
         
         // Add active class to current algorithm
         if (algorithm === 'dijkstra') {
             dijkstraBtn.classList.add('active');
-        } else if (algorithm === 'astar') {
-            astarBtn.classList.add('active');
         }
     }
 

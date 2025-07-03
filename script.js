@@ -129,9 +129,7 @@ function initializeEventListeners() {
         runPathfindingAlgorithm('dijkstra');
     });
 
-    document.getElementById('astar').addEventListener('click', () => {
-        runPathfindingAlgorithm('astar');
-    });
+ 
 
     // Current location button
     document.getElementById('currentLocation').addEventListener('click', function() {
@@ -192,9 +190,7 @@ async function runPathfindingAlgorithm(algorithm) {
 
         if (algorithm === 'dijkstra') {
             await runDijkstra();
-        } else if (algorithm === 'astar') {
-            await runAStar();
-        }
+        } 
 
         showStatusMessage(`${algorithm.toUpperCase()} algorithm completed successfully`, 'success');
     } catch (error) {
@@ -209,10 +205,7 @@ async function runDijkstra() {
     updateRoute('dijkstra');
 }
 
-// A* algorithm implementation
-async function runAStar() {
-    updateRoute('astar');
-}
+
 
 // Set start point
 async function setStartPoint(latlng) {
@@ -362,9 +355,7 @@ function updateRoute(algorithm = null) {
     let lineColor = '#3b82f6'; // default blue
     if (algorithm === 'dijkstra') {
         lineColor = '#10b981'; // green
-    } else if (algorithm === 'astar') {
-        lineColor = '#f59e0b'; // orange
-    }
+    } 
 
     routeOptions.lineOptions = {
         styles: [{
