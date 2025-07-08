@@ -124,12 +124,10 @@ function updateMapTiles() {
 
 // Initialize event listeners
 function initializeEventListeners() {
-    // Algorithm buttons
+    // Algorithm button
     document.getElementById('dijkstra').addEventListener('click', () => {
-        runPathfindingAlgorithm('dijkstra');
+        runPathfindingAlgorithm();
     });
-
- 
 
     // Current location button
     document.getElementById('currentLocation').addEventListener('click', function() {
@@ -149,16 +147,13 @@ function initializeEventListeners() {
         }
     });
 
-    // Waypoint controls
-    document.getElementById('addWaypoint').addEventListener('click', function() {
-        if (!isAddingWaypoint) {
-            isAddingWaypoint = true;
-            this.innerHTML = '<span class="btn-icon">🎯</span><span class="btn-text">Click on map to add waypoint</span>';
-            showStatusMessage('Click on the map to add a waypoint', 'warning');
-        } else {
-            isAddingWaypoint = false;
-            this.innerHTML = '<span class="btn-icon">➕</span><span class="btn-text">Add Waypoint</span>';
-        }
+    // Waypoint search controls
+    document.getElementById('addWaypointSearch').addEventListener('click', function() {
+        toggleWaypointSearch();
+    });
+
+    document.getElementById('cancelWaypointSearch').addEventListener('click', function() {
+        hideWaypointSearch();
     });
 
     document.getElementById('clearWaypoints').addEventListener('click', function() {
@@ -174,27 +169,25 @@ function initializeEventListeners() {
     });
 }
 
-// Run pathfinding algorithm
-async function runPathfindingAlgorithm(algorithm) {
+// Run Dijkstra's pathfinding algorithm
+async function runPathfindingAlgorithm() {
     if (!startPoint || !endPoint) {
         showStatusMessage('Please set both start and end points', 'error');
         return;
     }
 
-    currentAlgorithm = algorithm;
+    currentAlgorithm = 'dijkstra';
     showLoading(true);
 
     try {
         // Simulate algorithm processing time
         await new Promise(resolve => setTimeout(resolve, 1500));
 
-        if (algorithm === 'dijkstra') {
-            await runDijkstra();
-        } 
+        await runDijkstra();
 
-        showStatusMessage(`${algorithm.toUpperCase()} algorithm completed successfully`, 'success');
+        showStatusMessage('Dijkstra\'s algorithm completed successfully', 'success');
     } catch (error) {
-        showStatusMessage(`Error running ${algorithm}: ${error.message}`, 'error');
+        showStatusMessage(`Error running Dijkstra's algorithm: ${error.message}`, 'error');
     } finally {
         showLoading(false);
     }
@@ -202,10 +195,35 @@ async function runPathfindingAlgorithm(algorithm) {
 
 // Dijkstra's algorithm implementation
 async function runDijkstra() {
-    updateRoute('dijkstra');
+    updateRoute();
 }
 
+// Toggle waypoint search input
+function toggleWaypointSearch() {
+    const searchContainer = document.getElementById('waypointSearchContainer');
+    const addButton = document.getElementById('addWaypointSearch');
+    
+    if (searchContainer.style.display === 'none') {
+        searchContainer.style.display = 'block';
+        addButton.innerHTML = '<span class="btn-icon">🔍</span><span class="btn-text">Searching...</span>';
+        document.getElementById('waypointSearch').focus();
+    } else {
+        hideWaypointSearch();
+    }
+}
 
+// Hide waypoint search input
+function hideWaypointSearch() {
+    const searchContainer = document.getElementById('waypointSearchContainer');
+    const addButton = document.getElementById('addWaypointSearch');
+    const searchInput = document.getElementById('waypointSearch');
+    const suggestions = document.getElementById('waypointSuggestions');
+    
+    searchContainer.style.display = 'none';
+    addButton.innerHTML = '<span class="btn-icon">🔍</span><span class="btn-text">Search & Add Waypoint</span>';
+    searchInput.value = '';
+    suggestions.innerHTML = '';
+}
 
 // Set start point
 async function setStartPoint(latlng) {
@@ -325,7 +343,7 @@ function removeWaypoint(index) {
 }
 
 // Update route
-function updateRoute(algorithm = null) {
+function updateRoute() {
     if (!startPoint || !endPoint) {
         return;
     }
@@ -342,7 +360,7 @@ function updateRoute(algorithm = null) {
         map.removeControl(routingControl);
     }
 
-    // Configure route options based on algorithm
+    // Configure route options
     let routeOptions = {
         waypoints: routeWaypoints,
         routeWhileDragging: false,
@@ -351,11 +369,8 @@ function updateRoute(algorithm = null) {
         show: false
     };
 
-    // Set line color based on algorithm
-    let lineColor = '#3b82f6'; // default blue
-    if (algorithm === 'dijkstra') {
-        lineColor = '#10b981'; // green
-    } 
+    // Set line color for Dijkstra's algorithm
+    let lineColor = '#10b981'; // green for Dijkstra's
 
     routeOptions.lineOptions = {
         styles: [{
@@ -514,6 +529,79 @@ function showLoading(show) {
 function initializeAutocomplete() {
     setupAutocomplete("startAddress", "startSuggestions", true);
     setupAutocomplete("endAddress", "endSuggestions", false);
+    setupWaypointAutocomplete();
+}
+
+// Setup waypoint autocomplete
+function setupWaypointAutocomplete() {
+    const input = document.getElementById('waypointSearch');
+    const suggestionBox = document.getElementById('waypointSuggestions');
+    let searchTimeout;
+
+    input.addEventListener("input", function() {
+        const query = input.value.trim();
+        
+        // Clear previous timeout
+        clearTimeout(searchTimeout);
+        
+        if (query.length < 3) {
+            suggestionBox.innerHTML = "";
+            return;
+        }
+
+        // Debounce search requests
+        searchTimeout = setTimeout(async () => {
+            try {
+                const response = await fetch(
+                    `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=5&addressdetails=1`
+                );
+                const results = await response.json();
+
+                suggestionBox.innerHTML = "";
+                
+                results.forEach((result) => {
+                    const suggestion = document.createElement("div");
+                    suggestion.className = "autocomplete-suggestion";
+                    suggestion.textContent = result.display_name;
+                    suggestion.onclick = async function() {
+                        const latlng = [parseFloat(result.lat), parseFloat(result.lon)];
+                        input.value = result.display_name;
+                        suggestionBox.innerHTML = "";
+
+                        // Add waypoint and hide search
+                        await addWaypoint(latlng);
+                        hideWaypointSearch();
+                        showStatusMessage('Waypoint added successfully', 'success');
+                    };
+                    suggestionBox.appendChild(suggestion);
+                });
+            } catch (error) {
+                console.error('Geocoding error:', error);
+                showStatusMessage('Error searching for locations', 'error');
+            }
+        }, 300);
+    });
+
+    // Close suggestions when clicking outside
+    document.addEventListener('click', function(e) {
+        if (!input.contains(e.target) && !suggestionBox.contains(e.target)) {
+            suggestionBox.innerHTML = "";
+        }
+    });
+
+    // Handle Enter key
+    input.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            const firstSuggestion = suggestionBox.querySelector('.autocomplete-suggestion');
+            if (firstSuggestion) {
+                firstSuggestion.click();
+            }
+        }
+        if (e.key === 'Escape') {
+            hideWaypointSearch();
+        }
+    });
 }
 
 // Setup autocomplete for a specific input
