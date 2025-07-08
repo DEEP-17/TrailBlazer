@@ -323,13 +323,6 @@ body {
   border-bottom: none;
 }
 
-/* Algorithm Buttons */
-.algorithm-buttons {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-
 .algorithm-btn {
   padding: 1rem;
   border: 2px solid transparent;
@@ -343,6 +336,8 @@ body {
   gap: 0.5rem;
   text-align: left;
   justify-content: flex-start;
+  width: 100%;
+  margin-bottom: 0.75rem;
 }
 
 .dijkstra-btn {
@@ -353,16 +348,6 @@ body {
 .dijkstra-btn:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(16, 185, 129, 0.3);
-}
-
-.astar-btn {
-  background: linear-gradient(135deg, var(--warning), #e67e22);
-  color: white;
-}
-
-.astar-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(245, 158, 11, 0.3);
 }
 
 .algorithm-btn:disabled {
@@ -408,6 +393,46 @@ body {
 .clear-waypoints:hover {
   border-color: var(--danger);
   color: var(--danger);
+}
+
+/* Waypoint Search Container */
+.waypoint-search-container {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: var(--bg-secondary);
+  border-radius: 12px;
+  border: 2px solid var(--border-color);
+  animation: slideDown 0.3s ease;
+}
+
+.cancel-search-btn {
+  padding: 0.875rem;
+  background: var(--danger);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cancel-search-btn:hover {
+  background: var(--danger-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* Waypoint List */
