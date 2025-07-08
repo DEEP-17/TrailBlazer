@@ -3,13 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TrailBlazer</title>
+    <title>Advanced Pathfinding Visualization</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
 </head>
 <body>
     <div class="app-container">
@@ -22,7 +21,7 @@
                     </button>
                     <h1 class="app-title">
                         <span class="icon">🗺️</span>
-                      TrailBlazer
+                        TrailBlazer
                     </h1>
                 </div>
                 <div class="header-controls">
@@ -75,29 +74,41 @@
 
                     <!-- Algorithm Selection -->
                     <div class="panel-section">
-                        <h3 class="section-title">Pathfinding Algorithms</h3>
-                        <div class="algorithm-buttons">
-                            <button id="dijkstra" class="algorithm-btn dijkstra-btn">
-                                <span class="btn-icon">🔍</span>
-                                <span class="btn-text">Dijkstra's Algorithm</span>
-                            </button>
-                          
-                        </div>
+                        <h3 class="section-title">Pathfinding Algorithm</h3>
+                        <button id="dijkstra" class="algorithm-btn dijkstra-btn">
+                            <span class="btn-icon">🔍</span>
+                            <span class="btn-text">Run Dijkstra's Algorithm</span>
+                        </button>
                     </div>
 
                     <!-- Waypoint Controls -->
                     <div class="panel-section">
                         <h3 class="section-title">Waypoints</h3>
                         <div class="waypoint-controls">
-                            <button id="addWaypoint" class="waypoint-btn add-waypoint">
-                                <span class="btn-icon">➕</span>
-                                <span class="btn-text">Add Waypoint</span>
+                            <button id="addWaypointSearch" class="waypoint-btn add-waypoint">
+                                <span class="btn-icon">🔍</span>
+                                <span class="btn-text">Search & Add Waypoint</span>
                             </button>
                             <button id="clearWaypoints" class="waypoint-btn clear-waypoints">
                                 <span class="btn-icon">🗑️</span>
                                 <span class="btn-text">Clear All</span>
                             </button>
                         </div>
+                        
+                        <!-- Waypoint Search Input (Initially Hidden) -->
+                        <div id="waypointSearchContainer" class="waypoint-search-container" style="display: none;">
+                            <div class="input-group">
+                                <label class="input-label">Search Waypoint Location</label>
+                                <div class="input-wrapper">
+                                    <input type="text" id="waypointSearch" class="location-input" placeholder="Enter waypoint address">
+                                    <button id="cancelWaypointSearch" class="cancel-search-btn" title="Cancel Search">
+                                        <span class="btn-icon">✕</span>
+                                    </button>
+                                </div>
+                                <div id="waypointSuggestions" class="autocomplete-suggestions"></div>
+                            </div>
+                        </div>
+                        
                         <div id="waypointList" class="waypoint-list"></div>
                     </div>
 
