@@ -1,4 +1,4 @@
-// Main application state
+
 let map;
 let startPoint = null;
 let endPoint = null;
@@ -10,7 +10,6 @@ let isSidebarCollapsed = false;
 let isDirectionsCollapsed = true;
 let currentTileLayer = null;
 
-// Initialize the application
 document.addEventListener('DOMContentLoaded', function() {
     initializeMap();
     initializeEventListeners();
@@ -19,20 +18,18 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeToggleControls();
 });
 
-// Initialize toggle controls
+
 function initializeToggleControls() {
     // Sidebar toggle
     document.getElementById('sidebarToggle').addEventListener('click', function() {
         toggleSidebar();
     });
 
-    // Directions toggle
     document.getElementById('directionsToggle').addEventListener('click', function() {
         toggleDirections();
     });
 }
 
-// Toggle sidebar
 function toggleSidebar() {
     const controlPanel = document.getElementById('controlPanel');
     const appTitle = document.querySelector('.app-title');
@@ -43,16 +40,16 @@ function toggleSidebar() {
     if (isSidebarCollapsed) {
         controlPanel.classList.add('collapsed');
         appTitle.style.opacity = '0';
-        // Update directions panel position
+       
         directionsPanel.style.left = 'var(--sidebar-collapsed-width)';
     } else {
         controlPanel.classList.remove('collapsed');
         appTitle.style.opacity = '1';
-        // Update directions panel position
+   
         directionsPanel.style.left = 'var(--sidebar-width)';
     }
     
-    // Trigger map resize after animation
+    
     setTimeout(() => {
         if (map) {
             map.invalidateSize();
@@ -60,7 +57,7 @@ function toggleSidebar() {
     }, 300);
 }
 
-// Toggle directions panel
+
 function toggleDirections() {
     const directionsPanel = document.getElementById('directionsPanel');
     const toggleIcon = document.querySelector('.directions-toggle-icon');
@@ -78,14 +75,11 @@ function toggleDirections() {
     }
 }
 
-// Initialize the map
 function initializeMap() {
     map = L.map('map').setView([40.7128, -74.0060], 13);
     
-    // Initialize with light theme tiles
     updateMapTiles();
 
-    // Add click event for adding waypoints
     map.on('click', function(e) {
         if (isAddingWaypoint) {
             addWaypoint([e.latlng.lat, e.latlng.lng]);
@@ -96,25 +90,25 @@ function initializeMap() {
     });
 }
 
-// Update map tiles based on theme
+
 function updateMapTiles() {
     const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
     
-    // Remove existing tile layer
+   
     if (currentTileLayer) {
         map.removeLayer(currentTileLayer);
     }
     
-    // Add appropriate tile layer based on theme
+    
     if (currentTheme === 'dark') {
-        // Use CartoDB Dark Matter tiles (free, no API key required)
+        
         currentTileLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
             maxZoom: 19,
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
             subdomains: 'abcd'
         }).addTo(map);
     } else {
-        // Use standard light map tiles
+
         currentTileLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 19,
             attribution: '© OpenStreetMap contributors'
@@ -124,12 +118,12 @@ function updateMapTiles() {
 
 // Initialize event listeners
 function initializeEventListeners() {
-    // Algorithm button
+    // Algorithm 
     document.getElementById('dijkstra').addEventListener('click', () => {
         runPathfindingAlgorithm();
     });
 
-    // Current location button
+  
     document.getElementById('currentLocation').addEventListener('click', function() {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
@@ -147,7 +141,7 @@ function initializeEventListeners() {
         }
     });
 
-    // Waypoint search controls
+    
     document.getElementById('addWaypointSearch').addEventListener('click', function() {
         toggleWaypointSearch();
     });
@@ -161,7 +155,7 @@ function initializeEventListeners() {
         showStatusMessage('All waypoints cleared', 'success');
     });
 
-    // Travel mode change
+    
     document.getElementById('travelMode').addEventListener('change', function() {
         if (routingControl) {
             updateRoute();
@@ -169,7 +163,7 @@ function initializeEventListeners() {
     });
 }
 
-// Run Dijkstra's pathfinding algorithm
+
 async function runPathfindingAlgorithm() {
     if (!startPoint || !endPoint) {
         showStatusMessage('Please set both start and end points', 'error');
@@ -180,7 +174,7 @@ async function runPathfindingAlgorithm() {
     showLoading(true);
 
     try {
-        // Simulate algorithm processing time
+        
         await new Promise(resolve => setTimeout(resolve, 1500));
 
         await runDijkstra();
@@ -193,12 +187,12 @@ async function runPathfindingAlgorithm() {
     }
 }
 
-// Dijkstra's algorithm implementation
+
 async function runDijkstra() {
     updateRoute();
 }
 
-// Toggle waypoint search input
+
 function toggleWaypointSearch() {
     const searchContainer = document.getElementById('waypointSearchContainer');
     const addButton = document.getElementById('addWaypointSearch');
@@ -212,7 +206,7 @@ function toggleWaypointSearch() {
     }
 }
 
-// Hide waypoint search input
+
 function hideWaypointSearch() {
     const searchContainer = document.getElementById('waypointSearchContainer');
     const addButton = document.getElementById('addWaypointSearch');
@@ -225,7 +219,7 @@ function hideWaypointSearch() {
     suggestions.innerHTML = '';
 }
 
-// Set start point
+
 async function setStartPoint(latlng) {
     if (startPoint) {
         map.removeLayer(startPoint);
@@ -250,7 +244,7 @@ async function setStartPoint(latlng) {
     }
 }
 
-// Set end point
+
 async function setEndPoint(latlng) {
     if (endPoint) {
         map.removeLayer(endPoint);
@@ -275,7 +269,7 @@ async function setEndPoint(latlng) {
     }
 }
 
-// Add waypoint
+
 async function addWaypoint(latlng) {
     const waypoint = L.marker(latlng, {
         draggable: true,
@@ -302,7 +296,7 @@ async function addWaypoint(latlng) {
     }
 }
 
-// Clear waypoints
+
 function clearWaypoints() {
     waypoints.forEach(wp => map.removeLayer(wp));
     waypoints = [];
@@ -313,7 +307,7 @@ function clearWaypoints() {
     }
 }
 
-// Update waypoint list display
+
 function updateWaypointList() {
     const waypointList = document.getElementById('waypointList');
     waypointList.innerHTML = '';
@@ -323,13 +317,13 @@ function updateWaypointList() {
         item.className = 'waypoint-item';
         item.innerHTML = `
             <span>Waypoint ${index + 1}</span>
-            <button class="waypoint-remove" onclick="removeWaypoint(${index})">Remove</button>
+            < class="waypoint-remove" onclick="removeWaypoint(${index})">Remove</>
         `;
         waypointList.appendChild(item);
     });
 }
 
-// Remove specific waypoint
+
 function removeWaypoint(index) {
     if (index >= 0 && index < waypoints.length) {
         map.removeLayer(waypoints[index]);
@@ -342,7 +336,7 @@ function removeWaypoint(index) {
     }
 }
 
-// Update route
+
 function updateRoute() {
     if (!startPoint || !endPoint) {
         return;
@@ -360,7 +354,7 @@ function updateRoute() {
         map.removeControl(routingControl);
     }
 
-    // Configure route options
+    
     let routeOptions = {
         waypoints: routeWaypoints,
         routeWhileDragging: false,
@@ -369,8 +363,8 @@ function updateRoute() {
         show: false
     };
 
-    // Set line color for Dijkstra's algorithm
-    let lineColor = '#10b981'; // green for Dijkstra's
+    
+    let lineColor = '#10b981'; 
 
     routeOptions.lineOptions = {
         styles: [{
@@ -380,7 +374,7 @@ function updateRoute() {
         }]
     };
 
-    // Configure router based on travel mode
+    
     const profile = travelMode === 'driving' ? 'driving' : travelMode === 'cycling' ? 'cycling' : 'foot';
     routeOptions.router = L.Routing.osrmv1({
         serviceUrl: `https://router.project-osrm.org/route/v1`,
@@ -399,20 +393,20 @@ function updateRoute() {
         .addTo(map);
 }
 
-// Display route information
+
 function displayRouteInfo(route, travelMode) {
-    const distance = (route.summary.totalDistance / 1000).toFixed(2); // Convert to km
-    const duration = Math.round(route.summary.totalTime / 60); // Convert to minutes
+    const distance = (route.summary.totalDistance / 1000).toFixed(2); 
+    const duration = Math.round(route.summary.totalTime / 60);
     
     document.getElementById('routeDistance').textContent = `${distance} km`;
     document.getElementById('routeDuration').textContent = `${duration} min`;
     
-    // Calculate estimated time based on travel mode
+    
     const estimatedTime = calculateEstimatedTime(distance, travelMode);
     document.getElementById('estimatedTime').textContent = estimatedTime;
 }
 
-// Calculate estimated time based on travel mode and human factors
+
 function calculateEstimatedTime(distanceKm, travelMode) {
     const distance = parseFloat(distanceKm);
     let speed; // km/h
@@ -420,15 +414,15 @@ function calculateEstimatedTime(distanceKm, travelMode) {
     
     switch (travelMode) {
         case 'foot':
-            speed = 4.5; // Average walking speed
+            speed = 4.5; 
             timeHours = distance / speed;
             break;
         case 'cycling':
-            speed = 15; // Average cycling speed
+            speed = 15; 
             timeHours = distance / speed;
             break;
         case 'driving':
-            speed = 35; // Average city driving speed (accounting for traffic)
+            speed = 35; 
             timeHours = distance / speed;
             break;
         default:
@@ -446,7 +440,7 @@ function calculateEstimatedTime(distanceKm, travelMode) {
     }
 }
 
-// Display turn-by-turn directions
+
 function displayDirections(route) {
     const directionsContent = document.getElementById('directions');
     directionsContent.innerHTML = '';
@@ -473,7 +467,7 @@ function displayDirections(route) {
     showDirections();
 }
 
-// Show directions panel
+
 function showDirections() {
     const directionsPanel = document.getElementById('directionsPanel');
     directionsPanel.classList.add('show');
@@ -481,7 +475,7 @@ function showDirections() {
     document.querySelector('.directions-toggle-icon').textContent = '▼';
 }
 
-// Create custom marker icons
+
 function createCustomIcon(type) {
     let color = '#3b82f6';
     let className = 'custom-marker';
@@ -505,7 +499,7 @@ function createCustomIcon(type) {
     });
 }
 
-// Reverse geocoding
+
 async function reverseGeocode(lat, lng) {
     try {
         const response = await fetch(
@@ -519,20 +513,20 @@ async function reverseGeocode(lat, lng) {
     }
 }
 
-// Show/hide loading overlay
+
 function showLoading(show) {
     const overlay = document.getElementById('loadingOverlay');
     overlay.style.display = show ? 'flex' : 'none';
 }
 
-// Initialize autocomplete for address inputs
+
 function initializeAutocomplete() {
     setupAutocomplete("startAddress", "startSuggestions", true);
     setupAutocomplete("endAddress", "endSuggestions", false);
     setupWaypointAutocomplete();
 }
 
-// Setup waypoint autocomplete
+
 function setupWaypointAutocomplete() {
     const input = document.getElementById('waypointSearch');
     const suggestionBox = document.getElementById('waypointSuggestions');
@@ -541,7 +535,7 @@ function setupWaypointAutocomplete() {
     input.addEventListener("input", function() {
         const query = input.value.trim();
         
-        // Clear previous timeout
+        
         clearTimeout(searchTimeout);
         
         if (query.length < 3) {
@@ -549,7 +543,7 @@ function setupWaypointAutocomplete() {
             return;
         }
 
-        // Debounce search requests
+      
         searchTimeout = setTimeout(async () => {
             try {
                 const response = await fetch(
@@ -582,14 +576,14 @@ function setupWaypointAutocomplete() {
         }, 300);
     });
 
-    // Close suggestions when clicking outside
+    
     document.addEventListener('click', function(e) {
         if (!input.contains(e.target) && !suggestionBox.contains(e.target)) {
             suggestionBox.innerHTML = "";
         }
     });
 
-    // Handle Enter key
+    
     input.addEventListener('keydown', function(e) {
         if (e.key === 'Enter') {
             e.preventDefault();
@@ -604,7 +598,7 @@ function setupWaypointAutocomplete() {
     });
 }
 
-// Setup autocomplete for a specific input
+
 function setupAutocomplete(inputId, suggestionId, isStart) {
     const input = document.getElementById(inputId);
     const suggestionBox = document.getElementById(suggestionId);
@@ -613,7 +607,7 @@ function setupAutocomplete(inputId, suggestionId, isStart) {
     input.addEventListener("input", function() {
         const query = input.value.trim();
         
-        // Clear previous timeout
+        
         clearTimeout(searchTimeout);
         
         if (query.length < 3) {
@@ -621,7 +615,7 @@ function setupAutocomplete(inputId, suggestionId, isStart) {
             return;
         }
 
-        // Debounce search requests
+        
         searchTimeout = setTimeout(async () => {
             try {
                 const response = await fetch(
@@ -655,7 +649,7 @@ function setupAutocomplete(inputId, suggestionId, isStart) {
         }, 300);
     });
 
-    // Close suggestions when clicking outside
+    
     document.addEventListener('click', function(e) {
         if (!input.contains(e.target) && !suggestionBox.contains(e.target)) {
             suggestionBox.innerHTML = "";
@@ -663,7 +657,7 @@ function setupAutocomplete(inputId, suggestionId, isStart) {
     });
 }
 
-// Initialize theme
+
 function initializeTheme() {
     const currentTheme = localStorage.getItem('theme') || 'light';
     document.documentElement.setAttribute('data-theme', currentTheme);
@@ -677,18 +671,17 @@ function initializeTheme() {
         localStorage.setItem('theme', newTheme);
         updateThemeIcon(newTheme);
         
-        // Update map tiles when theme changes
         updateMapTiles();
     });
 }
 
-// Update theme icon
+
 function updateThemeIcon(theme) {
     const themeIcon = document.querySelector('.theme-icon');
     themeIcon.textContent = theme === 'light' ? '🌙' : '☀️';
 }
 
-// Show status message
+
 function showStatusMessage(message, type = 'info', duration = 4000) {
     const statusContainer = document.getElementById('statusMessages');
     
@@ -698,7 +691,7 @@ function showStatusMessage(message, type = 'info', duration = 4000) {
 
     statusContainer.appendChild(messageElement);
 
-    // Auto-remove after duration
+    
     setTimeout(() => {
         if (messageElement.parentNode) {
             messageElement.style.animation = 'slideOut 0.3s ease';
@@ -710,7 +703,6 @@ function showStatusMessage(message, type = 'info', duration = 4000) {
         }
     }, duration);
 
-    // Add click to dismiss
     messageElement.addEventListener('click', () => {
         if (messageElement.parentNode) {
             messageElement.style.animation = 'slideOut 0.3s ease';
@@ -723,5 +715,5 @@ function showStatusMessage(message, type = 'info', duration = 4000) {
     });
 }
 
-// Make removeWaypoint function globally accessible
+
 window.removeWaypoint = removeWaypoint;

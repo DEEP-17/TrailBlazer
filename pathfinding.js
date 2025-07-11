@@ -1,17 +1,16 @@
-// Pathfinding algorithms implementation
+
 class PathfindingAlgorithms {
     constructor() {
         this.nodes = new Map();
         this.edges = new Map();
     }
 
-    // Dijkstra's Algorithm implementation
+  
     async dijkstra(startNode, endNode, nodes, edges) {
         const distances = new Map();
         const previous = new Map();
         const unvisited = new Set();
 
-        // Initialize distances
         for (let node of nodes) {
             distances.set(node, Infinity);
             previous.set(node, null);
@@ -20,7 +19,6 @@ class PathfindingAlgorithms {
         distances.set(startNode, 0);
 
         while (unvisited.size > 0) {
-            // Find unvisited node with minimum distance
             let currentNode = null;
             let minDistance = Infinity;
             
@@ -37,12 +35,12 @@ class PathfindingAlgorithms {
 
             unvisited.delete(currentNode);
 
-            // If we reached the destination
+           
             if (currentNode === endNode) {
                 break;
             }
 
-            // Check neighbors
+       
             const neighbors = edges.get(currentNode) || [];
             for (let neighbor of neighbors) {
                 if (unvisited.has(neighbor.node)) {
@@ -54,14 +52,13 @@ class PathfindingAlgorithms {
                 }
             }
 
-            // Add visual delay for demonstration
             await new Promise(resolve => setTimeout(resolve, 10));
         }
 
         return this.reconstructPath(previous, startNode, endNode);
     }
 
-    // Reconstruct path from previous nodes
+  
     reconstructPath(previous, startNode, endNode) {
         const path = [];
         let currentNode = endNode;
@@ -71,11 +68,11 @@ class PathfindingAlgorithms {
             currentNode = previous.get(currentNode);
         }
 
-        // Return path only if it starts with startNode
+        
         return path.length > 0 && path[0] === startNode ? path : [];
     }
 
-    // Haversine distance for geographic coordinates
+   
     haversineDistance(node1, node2) {
         const R = 6371; // Earth's radius in kilometers
         const dLat = this.toRadians(node2.lat - node1.lat);
@@ -93,23 +90,23 @@ class PathfindingAlgorithms {
         return degrees * (Math.PI / 180);
     }
 
-    // Create graph from route points for algorithm visualization
+ 
     createGraphFromRoute(routePoints) {
         const nodes = [];
         const edges = new Map();
 
-        // Create nodes
+     
         routePoints.forEach((point, index) => {
             nodes.push({
                 id: index,
                 lat: point[0],
                 lon: point[1],
-                x: point[1], // longitude as x
-                y: point[0]  // latitude as y
+                x: point[1], 
+                y: point[0]  
             });
         });
 
-        // Create edges (connections between consecutive points)
+     
         for (let i = 0; i < nodes.length - 1; i++) {
             const currentNode = nodes[i];
             const nextNode = nodes[i + 1];
@@ -129,9 +126,9 @@ class PathfindingAlgorithms {
         return { nodes, edges };
     }
 
-    // Simulate Dijkstra's pathfinding on actual route
+   
     async simulatePathfinding(startPoint, endPoint, waypoints = []) {
-        // Create a simplified graph for demonstration
+       
         const routePoints = [
             [startPoint.getLatLng().lat, startPoint.getLatLng().lng],
             ...waypoints.map(wp => [wp.getLatLng().lat, wp.getLatLng().lng]),
@@ -153,7 +150,6 @@ class PathfindingAlgorithms {
         };
     }
 
-    // Calculate total path length
     calculatePathLength(path) {
         let totalDistance = 0;
         for (let i = 0; i < path.length - 1; i++) {
@@ -163,7 +159,6 @@ class PathfindingAlgorithms {
     }
 }
 
-// Export for use in main script
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = PathfindingAlgorithms;
 } else {

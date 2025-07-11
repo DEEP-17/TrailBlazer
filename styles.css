@@ -1,5 +1,5 @@
 :root {
-  /* Light theme colors */
+
   --bg-primary: #ffffff;
   --bg-secondary: #f8fafc;
   --bg-tertiary: #f1f5f9;
@@ -11,7 +11,6 @@
   --shadow-medium: rgba(0, 0, 0, 0.1);
   --shadow-heavy: rgba(0, 0, 0, 0.15);
   
-  /* Brand colors */
   --primary: #3b82f6;
   --primary-hover: #2563eb;
   --success: #10b981;
@@ -21,12 +20,11 @@
   --danger: #ef4444;
   --danger-hover: #dc2626;
   
-  /* Glassmorphism */
+
   --glass-bg: rgba(255, 255, 255, 0.85);
   --glass-border: rgba(255, 255, 255, 0.2);
   --glass-shadow: rgba(0, 0, 0, 0.1);
-  
-  /* Panel dimensions */
+
   --sidebar-width: 350px;
   --sidebar-collapsed-width: 60px;
   --directions-height: 300px;
@@ -34,7 +32,7 @@
 }
 
 [data-theme="dark"] {
-  /* Dark theme colors */
+  
   --bg-primary: #0f172a;
   --bg-secondary: #1e293b;
   --bg-tertiary: #334155;
@@ -46,7 +44,7 @@
   --shadow-medium: rgba(0, 0, 0, 0.3);
   --shadow-heavy: rgba(0, 0, 0, 0.4);
   
-  /* Glassmorphism dark */
+ 
   --glass-bg: rgba(15, 23, 42, 0.85);
   --glass-border: rgba(255, 255, 255, 0.1);
   --glass-shadow: rgba(0, 0, 0, 0.3);
@@ -73,7 +71,6 @@ body {
   overflow: hidden;
 }
 
-/* Header */
 .header {
   background: var(--glass-bg);
   backdrop-filter: blur(10px);
@@ -172,14 +169,14 @@ body {
   transform: rotate(15deg);
 }
 
-/* Main Content */
+
 .main-content {
   display: flex;
   flex: 1;
   overflow: hidden;
 }
 
-/* Control Panel */
+
 .control-panel {
   width: var(--sidebar-width);
   background: var(--glass-bg);
@@ -210,7 +207,7 @@ body {
   pointer-events: none;
 }
 
-/* Collapsed sidebar icon display */
+
 .control-panel.collapsed::after {
   content: "🗺️";
   position: absolute;
@@ -291,7 +288,6 @@ body {
   box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
 }
 
-/* Autocomplete */
 .autocomplete-suggestions {
   position: absolute;
   top: 100%;
@@ -356,7 +352,7 @@ body {
   transform: none;
 }
 
-/* Waypoint Controls */
+
 .waypoint-controls {
   display: flex;
   gap: 0.75rem;
@@ -395,7 +391,6 @@ body {
   color: var(--danger);
 }
 
-/* Waypoint Search Container */
 .waypoint-search-container {
   margin-top: 1rem;
   padding: 1rem;
@@ -435,7 +430,6 @@ body {
   }
 }
 
-/* Waypoint List */
 .waypoint-list {
   max-height: 150px;
   overflow-y: auto;
@@ -462,7 +456,7 @@ body {
   font-size: 0.75rem;
 }
 
-/* Route Info */
+
 .route-info {
   background: var(--bg-secondary);
   border-radius: 12px;
@@ -492,7 +486,6 @@ body {
   color: var(--primary);
 }
 
-/* Map Container */
 .map-container {
   flex: 1;
   position: relative;
@@ -506,7 +499,7 @@ body {
   transition: filter 0.3s ease;
 }
 
-/* Loading Overlay */
+
 .loading-overlay {
   position: absolute;
   top: 0;
@@ -542,7 +535,6 @@ body {
   100% { transform: rotate(360deg); }
 }
 
-/* Directions Panel */
 .directions-panel {
   position: fixed;
   bottom: 0;
@@ -565,7 +557,7 @@ body {
   transform: translateY(calc(100% - var(--directions-collapsed-height)));
 }
 
-/* Adjust directions panel when sidebar is collapsed */
+
 .control-panel.collapsed ~ .map-container ~ .directions-panel {
   left: var(--sidebar-collapsed-width);
 }
@@ -660,7 +652,7 @@ body {
   color: var(--text-muted);
 }
 
-/* Status Messages */
+
 .status-messages {
   position: fixed;
   top: 1rem;
@@ -732,7 +724,7 @@ body {
   transform: translateY(-1px);
 }
 
-/* Button Icons and Text */
+
 .btn-icon {
   font-size: 1rem;
   flex-shrink: 0;
@@ -749,7 +741,6 @@ body {
   width: 0;
 }
 
-/* Responsive Design */
 @media (max-width: 768px) {
   .main-content {
     flex-direction: column;
@@ -797,7 +788,7 @@ body {
   }
 }
 
-/* Custom scrollbar */
+
 ::-webkit-scrollbar {
   width: 6px;
 }
@@ -815,7 +806,6 @@ body {
   background: var(--text-muted);
 }
 
-/* Map custom styles */
 .leaflet-routing-container {
   display: none !important;
 }
@@ -824,7 +814,7 @@ body {
   display: none;
 }
 
-/* Custom marker styles */
+
 .custom-marker {
   background: var(--primary);
   border: 3px solid white;
@@ -844,7 +834,6 @@ body {
   background: var(--warning) !important;
 }
 
-/* Dark theme map controls styling */
 [data-theme="dark"] .leaflet-control-zoom a,
 [data-theme="dark"] .leaflet-control-attribution {
   background-color: var(--bg-secondary) !important;

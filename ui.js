@@ -1,4 +1,4 @@
-// UI management and theme handling
+
 class UIManager {
     constructor() {
         this.currentTheme = localStorage.getItem('theme') || 'light';
@@ -7,13 +7,13 @@ class UIManager {
         this.isDirectionsCollapsed = true;
     }
 
-    // Initialize theme
+    
     initializeTheme() {
         this.setTheme(this.currentTheme);
         this.updateThemeIcon();
     }
 
-    // Toggle between light and dark themes
+    
     toggleTheme() {
         this.currentTheme = this.currentTheme === 'light' ? 'dark' : 'light';
         this.setTheme(this.currentTheme);
@@ -21,13 +21,13 @@ class UIManager {
         localStorage.setItem('theme', this.currentTheme);
     }
 
-    // Set theme
+    
     setTheme(theme) {
         document.documentElement.setAttribute('data-theme', theme);
         this.currentTheme = theme;
     }
 
-    // Update theme toggle icon
+    
     updateThemeIcon() {
         const themeIcon = document.querySelector('.theme-icon');
         if (themeIcon) {
@@ -35,7 +35,7 @@ class UIManager {
         }
     }
 
-    // Toggle sidebar
+    
     toggleSidebar() {
         const controlPanel = document.getElementById('controlPanel');
         const appTitle = document.querySelector('.app-title');
@@ -50,7 +50,6 @@ class UIManager {
             if (appTitle) appTitle.style.opacity = '1';
         }
         
-        // Trigger map resize after animation
         setTimeout(() => {
             if (window.map) {
                 window.map.invalidateSize();
@@ -58,7 +57,7 @@ class UIManager {
         }, 300);
     }
 
-    // Toggle directions panel
+  
     toggleDirections() {
         const directionsPanel = document.getElementById('directionsPanel');
         const toggleIcon = document.querySelector('.directions-toggle-icon');
@@ -76,7 +75,7 @@ class UIManager {
         }
     }
 
-    // Show directions panel
+
     showDirections() {
         const directionsPanel = document.getElementById('directionsPanel');
         directionsPanel.classList.add('show');
@@ -85,24 +84,22 @@ class UIManager {
         if (toggleIcon) toggleIcon.textContent = '▼';
     }
 
-    // Show status message
+   
     showStatusMessage(message, type = 'info', duration = 4000) {
         const statusContainer = document.getElementById('statusMessages');
         
-        // Clear existing timeout
+        
         if (this.statusMessageTimeout) {
             clearTimeout(this.statusMessageTimeout);
         }
 
-        // Create message element
         const messageElement = document.createElement('div');
         messageElement.className = `status-message ${type}`;
         messageElement.textContent = message;
 
-        // Add to container
+        
         statusContainer.appendChild(messageElement);
 
-        // Auto-remove after duration
         this.statusMessageTimeout = setTimeout(() => {
             if (messageElement.parentNode) {
                 messageElement.style.animation = 'slideOut 0.3s ease';
@@ -114,7 +111,7 @@ class UIManager {
             }
         }, duration);
 
-        // Add click to dismiss
+    
         messageElement.addEventListener('click', () => {
             if (messageElement.parentNode) {
                 messageElement.style.animation = 'slideOut 0.3s ease';
@@ -127,7 +124,7 @@ class UIManager {
         });
     }
 
-    // Animate button press
+  
     animateButtonPress(buttonElement) {
         buttonElement.style.transform = 'scale(0.95)';
         setTimeout(() => {
@@ -135,7 +132,6 @@ class UIManager {
         }, 100);
     }
 
-    // Update control panel based on route state
     updateControlPanel(hasRoute, isCalculating = false) {
         const dijkstraBtn = document.getElementById('dijkstra');
         
@@ -148,7 +144,7 @@ class UIManager {
         }
     }
 
-    // Show loading spinner overlay
+    
     showLoadingOverlay(show, message = 'Calculating route...') {
         const overlay = document.getElementById('loadingOverlay');
         const loadingText = document.querySelector('.loading-text');
@@ -160,25 +156,23 @@ class UIManager {
         overlay.style.display = show ? 'flex' : 'none';
     }
 
-    // Update route information display
     updateRouteInfo(distance, duration, estimatedTime) {
         document.getElementById('routeDistance').textContent = distance || '--';
         document.getElementById('routeDuration').textContent = duration || '--';
         document.getElementById('estimatedTime').textContent = estimatedTime || '--';
     }
 
-    // Clear route information
+    
     clearRouteInfo() {
         this.updateRouteInfo('--', '--', '--');
     }
 
-    // Highlight active algorithm button
+
     highlightActiveAlgorithm() {
         const dijkstraBtn = document.getElementById('dijkstra');
         dijkstraBtn.classList.add('active');
     }
 
-    // Add smooth scroll to element
     smoothScrollTo(element, duration = 500) {
         const start = element.scrollTop;
         const target = element.scrollHeight - element.clientHeight;
@@ -200,7 +194,7 @@ class UIManager {
         requestAnimationFrame(animateScroll);
     }
 
-    // Validate form inputs
+    
     validateInputs() {
         const startAddress = document.getElementById('startAddress').value.trim();
         const endAddress = document.getElementById('endAddress').value.trim();
@@ -218,7 +212,7 @@ class UIManager {
         return true;
     }
 
-    // Format distance for display
+
     formatDistance(meters) {
         if (meters >= 1000) {
             return `${(meters / 1000).toFixed(2)} km`;
@@ -226,7 +220,7 @@ class UIManager {
         return `${Math.round(meters)} m`;
     }
 
-    // Format duration for display
+    
     formatDuration(seconds) {
         const minutes = Math.round(seconds / 60);
         if (minutes >= 60) {
@@ -237,7 +231,7 @@ class UIManager {
         return `${minutes} min`;
     }
 
-    // Add pulse animation to element
+   
     pulseElement(element, duration = 1000) {
         element.style.animation = `pulse ${duration}ms ease-in-out`;
         setTimeout(() => {
@@ -245,7 +239,7 @@ class UIManager {
         }, duration);
     }
 
-    // Handle responsive layout changes
+  
     handleResize() {
         const isMobile = window.innerWidth <= 768;
         const controlPanel = document.querySelector('.control-panel');
@@ -270,25 +264,24 @@ class UIManager {
     }
 }
 
-// Initialize UI Manager
+
 const uiManager = new UIManager();
 
-// Show status message (global function)
 function showStatusMessage(message, type = 'info', duration = 4000) {
     uiManager.showStatusMessage(message, type, duration);
 }
 
-// Handle window resize
+
 window.addEventListener('resize', () => {
     uiManager.handleResize();
 });
 
-// Initial resize handling
+
 document.addEventListener('DOMContentLoaded', () => {
     uiManager.handleResize();
 });
 
-// Export UI Manager for use in other scripts
+
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = UIManager;
 } else {
