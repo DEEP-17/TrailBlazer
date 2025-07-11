@@ -317,7 +317,7 @@ function updateWaypointList() {
         item.className = 'waypoint-item';
         item.innerHTML = `
             <span>Waypoint ${index + 1}</span>
-            < class="waypoint-remove" onclick="removeWaypoint(${index})">Remove</>
+            <class="waypoint-remove" onclick="removeWaypoint(${index})">Remove</>
         `;
         waypointList.appendChild(item);
     });
