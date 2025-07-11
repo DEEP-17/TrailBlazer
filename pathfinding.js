@@ -1,11 +1,9 @@
-
 class PathfindingAlgorithms {
     constructor() {
         this.nodes = new Map();
         this.edges = new Map();
     }
 
-  
     async dijkstra(startNode, endNode, nodes, edges) {
         const distances = new Map();
         const previous = new Map();
@@ -35,12 +33,10 @@ class PathfindingAlgorithms {
 
             unvisited.delete(currentNode);
 
-           
             if (currentNode === endNode) {
                 break;
             }
 
-       
             const neighbors = edges.get(currentNode) || [];
             for (let neighbor of neighbors) {
                 if (unvisited.has(neighbor.node)) {
@@ -58,7 +54,6 @@ class PathfindingAlgorithms {
         return this.reconstructPath(previous, startNode, endNode);
     }
 
-  
     reconstructPath(previous, startNode, endNode) {
         const path = [];
         let currentNode = endNode;
@@ -68,13 +63,11 @@ class PathfindingAlgorithms {
             currentNode = previous.get(currentNode);
         }
 
-        
         return path.length > 0 && path[0] === startNode ? path : [];
     }
 
-   
     haversineDistance(node1, node2) {
-        const R = 6371; // Earth's radius in kilometers
+        const R = 6371;
         const dLat = this.toRadians(node2.lat - node1.lat);
         const dLon = this.toRadians(node2.lon - node1.lon);
         
@@ -90,23 +83,20 @@ class PathfindingAlgorithms {
         return degrees * (Math.PI / 180);
     }
 
- 
     createGraphFromRoute(routePoints) {
         const nodes = [];
         const edges = new Map();
 
-     
         routePoints.forEach((point, index) => {
             nodes.push({
                 id: index,
                 lat: point[0],
                 lon: point[1],
-                x: point[1], 
-                y: point[0]  
+                x: point[1],
+                y: point[0]
             });
         });
 
-     
         for (let i = 0; i < nodes.length - 1; i++) {
             const currentNode = nodes[i];
             const nextNode = nodes[i + 1];
@@ -126,9 +116,7 @@ class PathfindingAlgorithms {
         return { nodes, edges };
     }
 
-   
     async simulatePathfinding(startPoint, endPoint, waypoints = []) {
-       
         const routePoints = [
             [startPoint.getLatLng().lat, startPoint.getLatLng().lng],
             ...waypoints.map(wp => [wp.getLatLng().lat, wp.getLatLng().lng]),
