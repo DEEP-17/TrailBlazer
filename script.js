@@ -1,4 +1,3 @@
-
 let map;
 let startPoint = null;
 let endPoint = null;
@@ -11,16 +10,14 @@ let isDirectionsCollapsed = true;
 let currentTileLayer = null;
 
 document.addEventListener('DOMContentLoaded', function() {
+    initializeTheme();
     initializeMap();
     initializeEventListeners();
     initializeAutocomplete();
-    initializeTheme();
     initializeToggleControls();
 });
 
-
 function initializeToggleControls() {
-    // Sidebar toggle
     document.getElementById('sidebarToggle').addEventListener('click', function() {
         toggleSidebar();
     });
@@ -40,15 +37,12 @@ function toggleSidebar() {
     if (isSidebarCollapsed) {
         controlPanel.classList.add('collapsed');
         appTitle.style.opacity = '0';
-       
         directionsPanel.style.left = 'var(--sidebar-collapsed-width)';
     } else {
         controlPanel.classList.remove('collapsed');
         appTitle.style.opacity = '1';
-   
         directionsPanel.style.left = 'var(--sidebar-width)';
     }
-    
     
     setTimeout(() => {
         if (map) {
@@ -56,7 +50,6 @@ function toggleSidebar() {
         }
     }, 300);
 }
-
 
 function toggleDirections() {
     const directionsPanel = document.getElementById('directionsPanel');
@@ -77,7 +70,6 @@ function toggleDirections() {
 
 function initializeMap() {
     map = L.map('map').setView([40.7128, -74.0060], 13);
-    
     updateMapTiles();
 
     map.on('click', function(e) {
@@ -90,25 +82,20 @@ function initializeMap() {
     });
 }
 
-
 function updateMapTiles() {
     const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
     
-   
     if (currentTileLayer) {
         map.removeLayer(currentTileLayer);
     }
     
-    
     if (currentTheme === 'dark') {
-        
         currentTileLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
             maxZoom: 19,
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
             subdomains: 'abcd'
         }).addTo(map);
     } else {
-
         currentTileLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 19,
             attribution: '© OpenStreetMap contributors'
@@ -116,14 +103,11 @@ function updateMapTiles() {
     }
 }
 
-// Initialize event listeners
 function initializeEventListeners() {
-    // Algorithm 
     document.getElementById('dijkstra').addEventListener('click', () => {
         runPathfindingAlgorithm();
     });
 
-  
     document.getElementById('currentLocation').addEventListener('click', function() {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
@@ -141,7 +125,6 @@ function initializeEventListeners() {
         }
     });
 
-    
     document.getElementById('addWaypointSearch').addEventListener('click', function() {
         toggleWaypointSearch();
     });
@@ -155,14 +138,12 @@ function initializeEventListeners() {
         showStatusMessage('All waypoints cleared', 'success');
     });
 
-    
     document.getElementById('travelMode').addEventListener('change', function() {
         if (routingControl) {
             updateRoute();
         }
     });
 }
-
 
 async function runPathfindingAlgorithm() {
     if (!startPoint || !endPoint) {
@@ -174,11 +155,8 @@ async function runPathfindingAlgorithm() {
     showLoading(true);
 
     try {
-        
         await new Promise(resolve => setTimeout(resolve, 1500));
-
         await runDijkstra();
-
         showStatusMessage('Dijkstra\'s algorithm completed successfully', 'success');
     } catch (error) {
         showStatusMessage(`Error running Dijkstra's algorithm: ${error.message}`, 'error');
@@ -187,11 +165,9 @@ async function runPathfindingAlgorithm() {
     }
 }
 
-
 async function runDijkstra() {
     updateRoute();
 }
-
 
 function toggleWaypointSearch() {
     const searchContainer = document.getElementById('waypointSearchContainer');
@@ -206,7 +182,6 @@ function toggleWaypointSearch() {
     }
 }
 
-
 function hideWaypointSearch() {
     const searchContainer = document.getElementById('waypointSearchContainer');
     const addButton = document.getElementById('addWaypointSearch');
@@ -218,7 +193,6 @@ function hideWaypointSearch() {
     searchInput.value = '';
     suggestions.innerHTML = '';
 }
-
 
 async function setStartPoint(latlng) {
     if (startPoint) {
@@ -244,7 +218,6 @@ async function setStartPoint(latlng) {
     }
 }
 
-
 async function setEndPoint(latlng) {
     if (endPoint) {
         map.removeLayer(endPoint);
@@ -269,12 +242,11 @@ async function setEndPoint(latlng) {
     }
 }
 
-
 async function addWaypoint(latlng) {
     const waypoint = L.marker(latlng, {
         draggable: true,
         icon: createCustomIcon('waypoint')
-    }).addTo(map).bindPopup("Waypoint").openPopup();
+    }).addTo(map);
 
     waypoint.on('dragend', function() {
         updateRoute();
@@ -284,8 +256,10 @@ async function addWaypoint(latlng) {
     try {
         const locationName = await reverseGeocode(latlng[0], latlng[1]);
         waypoint.locationName = locationName;
+        waypoint.bindPopup(locationName).openPopup();
     } catch (error) {
         waypoint.locationName = `${latlng[0].toFixed(4)}, ${latlng[1].toFixed(4)}`;
+        waypoint.bindPopup(waypoint.locationName).openPopup();
     }
 
     waypoints.push(waypoint);
@@ -295,7 +269,6 @@ async function addWaypoint(latlng) {
         updateRoute();
     }
 }
-
 
 function clearWaypoints() {
     waypoints.forEach(wp => map.removeLayer(wp));
@@ -307,7 +280,6 @@ function clearWaypoints() {
     }
 }
 
-
 function updateWaypointList() {
     const waypointList = document.getElementById('waypointList');
     waypointList.innerHTML = '';
@@ -315,14 +287,17 @@ function updateWaypointList() {
     waypoints.forEach((waypoint, index) => {
         const item = document.createElement('div');
         item.className = 'waypoint-item';
+        
+        const locationName = waypoint.locationName || `Waypoint ${index + 1}`;
+        const shortName = locationName.length > 30 ? locationName.substring(0, 30) + '...' : locationName;
+        
         item.innerHTML = `
-            <span>Waypoint ${index + 1}</span>
-            <class="waypoint-remove" onclick="removeWaypoint(${index})">Remove</>
+            <span title="${locationName}">${shortName}</span>
+            <button class="waypoint-remove" onclick="removeWaypoint(${index})">Remove</button>
         `;
         waypointList.appendChild(item);
     });
 }
-
 
 function removeWaypoint(index) {
     if (index >= 0 && index < waypoints.length) {
@@ -335,7 +310,6 @@ function removeWaypoint(index) {
         }
     }
 }
-
 
 function updateRoute() {
     if (!startPoint || !endPoint) {
@@ -354,7 +328,6 @@ function updateRoute() {
         map.removeControl(routingControl);
     }
 
-    
     let routeOptions = {
         waypoints: routeWaypoints,
         routeWhileDragging: false,
@@ -363,8 +336,7 @@ function updateRoute() {
         show: false
     };
 
-    
-    let lineColor = '#10b981'; 
+    let lineColor = '#10b981';
 
     routeOptions.lineOptions = {
         styles: [{
@@ -374,7 +346,6 @@ function updateRoute() {
         }]
     };
 
-    
     const profile = travelMode === 'driving' ? 'driving' : travelMode === 'cycling' ? 'cycling' : 'foot';
     routeOptions.router = L.Routing.osrmv1({
         serviceUrl: `https://router.project-osrm.org/route/v1`,
@@ -393,36 +364,33 @@ function updateRoute() {
         .addTo(map);
 }
 
-
 function displayRouteInfo(route, travelMode) {
-    const distance = (route.summary.totalDistance / 1000).toFixed(2); 
+    const distance = (route.summary.totalDistance / 1000).toFixed(2);
     const duration = Math.round(route.summary.totalTime / 60);
     
     document.getElementById('routeDistance').textContent = `${distance} km`;
     document.getElementById('routeDuration').textContent = `${duration} min`;
     
-    
     const estimatedTime = calculateEstimatedTime(distance, travelMode);
     document.getElementById('estimatedTime').textContent = estimatedTime;
 }
 
-
 function calculateEstimatedTime(distanceKm, travelMode) {
     const distance = parseFloat(distanceKm);
-    let speed; // km/h
+    let speed;
     let timeHours;
     
     switch (travelMode) {
         case 'foot':
-            speed = 4.5; 
+            speed = 4.5;
             timeHours = distance / speed;
             break;
         case 'cycling':
-            speed = 15; 
+            speed = 15;
             timeHours = distance / speed;
             break;
         case 'driving':
-            speed = 35; 
+            speed = 35;
             timeHours = distance / speed;
             break;
         default:
@@ -439,7 +407,6 @@ function calculateEstimatedTime(distanceKm, travelMode) {
         return minutes > 0 ? `${hours}h ${minutes}min` : `${hours}h`;
     }
 }
-
 
 function displayDirections(route) {
     const directionsContent = document.getElementById('directions');
@@ -467,14 +434,12 @@ function displayDirections(route) {
     showDirections();
 }
 
-
 function showDirections() {
     const directionsPanel = document.getElementById('directionsPanel');
     directionsPanel.classList.add('show');
     isDirectionsCollapsed = false;
     document.querySelector('.directions-toggle-icon').textContent = '▼';
 }
-
 
 function createCustomIcon(type) {
     let color = '#3b82f6';
@@ -499,7 +464,6 @@ function createCustomIcon(type) {
     });
 }
 
-
 async function reverseGeocode(lat, lng) {
     try {
         const response = await fetch(
@@ -513,19 +477,16 @@ async function reverseGeocode(lat, lng) {
     }
 }
 
-
 function showLoading(show) {
     const overlay = document.getElementById('loadingOverlay');
     overlay.style.display = show ? 'flex' : 'none';
 }
-
 
 function initializeAutocomplete() {
     setupAutocomplete("startAddress", "startSuggestions", true);
     setupAutocomplete("endAddress", "endSuggestions", false);
     setupWaypointAutocomplete();
 }
-
 
 function setupWaypointAutocomplete() {
     const input = document.getElementById('waypointSearch');
@@ -535,7 +496,6 @@ function setupWaypointAutocomplete() {
     input.addEventListener("input", function() {
         const query = input.value.trim();
         
-        
         clearTimeout(searchTimeout);
         
         if (query.length < 3) {
@@ -543,7 +503,6 @@ function setupWaypointAutocomplete() {
             return;
         }
 
-      
         searchTimeout = setTimeout(async () => {
             try {
                 const response = await fetch(
@@ -562,7 +521,6 @@ function setupWaypointAutocomplete() {
                         input.value = result.display_name;
                         suggestionBox.innerHTML = "";
 
-                        // Add waypoint and hide search
                         await addWaypoint(latlng);
                         hideWaypointSearch();
                         showStatusMessage('Waypoint added successfully', 'success');
@@ -576,14 +534,12 @@ function setupWaypointAutocomplete() {
         }, 300);
     });
 
-    
     document.addEventListener('click', function(e) {
         if (!input.contains(e.target) && !suggestionBox.contains(e.target)) {
             suggestionBox.innerHTML = "";
         }
     });
 
-    
     input.addEventListener('keydown', function(e) {
         if (e.key === 'Enter') {
             e.preventDefault();
@@ -598,7 +554,6 @@ function setupWaypointAutocomplete() {
     });
 }
 
-
 function setupAutocomplete(inputId, suggestionId, isStart) {
     const input = document.getElementById(inputId);
     const suggestionBox = document.getElementById(suggestionId);
@@ -607,7 +562,6 @@ function setupAutocomplete(inputId, suggestionId, isStart) {
     input.addEventListener("input", function() {
         const query = input.value.trim();
         
-        
         clearTimeout(searchTimeout);
         
         if (query.length < 3) {
@@ -615,7 +569,6 @@ function setupAutocomplete(inputId, suggestionId, isStart) {
             return;
         }
 
-        
         searchTimeout = setTimeout(async () => {
             try {
                 const response = await fetch(
@@ -649,14 +602,12 @@ function setupAutocomplete(inputId, suggestionId, isStart) {
         }, 300);
     });
 
-    
     document.addEventListener('click', function(e) {
         if (!input.contains(e.target) && !suggestionBox.contains(e.target)) {
             suggestionBox.innerHTML = "";
         }
     });
 }
-
 
 function initializeTheme() {
     const currentTheme = localStorage.getItem('theme') || 'light';
@@ -671,16 +622,16 @@ function initializeTheme() {
         localStorage.setItem('theme', newTheme);
         updateThemeIcon(newTheme);
         
-        updateMapTiles();
+        if (map && currentTileLayer) {
+            updateMapTiles();
+        }
     });
 }
-
 
 function updateThemeIcon(theme) {
     const themeIcon = document.querySelector('.theme-icon');
     themeIcon.textContent = theme === 'light' ? '🌙' : '☀️';
 }
-
 
 function showStatusMessage(message, type = 'info', duration = 4000) {
     const statusContainer = document.getElementById('statusMessages');
@@ -691,7 +642,6 @@ function showStatusMessage(message, type = 'info', duration = 4000) {
 
     statusContainer.appendChild(messageElement);
 
-    
     setTimeout(() => {
         if (messageElement.parentNode) {
             messageElement.style.animation = 'slideOut 0.3s ease';
@@ -714,6 +664,5 @@ function showStatusMessage(message, type = 'info', duration = 4000) {
         }
     });
 }
-
 
 window.removeWaypoint = removeWaypoint;
