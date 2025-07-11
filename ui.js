@@ -1,4 +1,3 @@
-
 class UIManager {
     constructor() {
         this.currentTheme = localStorage.getItem('theme') || 'light';
@@ -7,13 +6,11 @@ class UIManager {
         this.isDirectionsCollapsed = true;
     }
 
-    
     initializeTheme() {
         this.setTheme(this.currentTheme);
         this.updateThemeIcon();
     }
 
-    
     toggleTheme() {
         this.currentTheme = this.currentTheme === 'light' ? 'dark' : 'light';
         this.setTheme(this.currentTheme);
@@ -21,13 +18,11 @@ class UIManager {
         localStorage.setItem('theme', this.currentTheme);
     }
 
-    
     setTheme(theme) {
         document.documentElement.setAttribute('data-theme', theme);
         this.currentTheme = theme;
     }
 
-    
     updateThemeIcon() {
         const themeIcon = document.querySelector('.theme-icon');
         if (themeIcon) {
@@ -35,7 +30,6 @@ class UIManager {
         }
     }
 
-    
     toggleSidebar() {
         const controlPanel = document.getElementById('controlPanel');
         const appTitle = document.querySelector('.app-title');
@@ -57,7 +51,6 @@ class UIManager {
         }, 300);
     }
 
-  
     toggleDirections() {
         const directionsPanel = document.getElementById('directionsPanel');
         const toggleIcon = document.querySelector('.directions-toggle-icon');
@@ -75,7 +68,6 @@ class UIManager {
         }
     }
 
-
     showDirections() {
         const directionsPanel = document.getElementById('directionsPanel');
         directionsPanel.classList.add('show');
@@ -84,10 +76,8 @@ class UIManager {
         if (toggleIcon) toggleIcon.textContent = '▼';
     }
 
-   
     showStatusMessage(message, type = 'info', duration = 4000) {
         const statusContainer = document.getElementById('statusMessages');
-        
         
         if (this.statusMessageTimeout) {
             clearTimeout(this.statusMessageTimeout);
@@ -97,7 +87,6 @@ class UIManager {
         messageElement.className = `status-message ${type}`;
         messageElement.textContent = message;
 
-        
         statusContainer.appendChild(messageElement);
 
         this.statusMessageTimeout = setTimeout(() => {
@@ -111,7 +100,6 @@ class UIManager {
             }
         }, duration);
 
-    
         messageElement.addEventListener('click', () => {
             if (messageElement.parentNode) {
                 messageElement.style.animation = 'slideOut 0.3s ease';
@@ -124,7 +112,6 @@ class UIManager {
         });
     }
 
-  
     animateButtonPress(buttonElement) {
         buttonElement.style.transform = 'scale(0.95)';
         setTimeout(() => {
@@ -144,7 +131,6 @@ class UIManager {
         }
     }
 
-    
     showLoadingOverlay(show, message = 'Calculating route...') {
         const overlay = document.getElementById('loadingOverlay');
         const loadingText = document.querySelector('.loading-text');
@@ -162,11 +148,9 @@ class UIManager {
         document.getElementById('estimatedTime').textContent = estimatedTime || '--';
     }
 
-    
     clearRouteInfo() {
         this.updateRouteInfo('--', '--', '--');
     }
-
 
     highlightActiveAlgorithm() {
         const dijkstraBtn = document.getElementById('dijkstra');
@@ -194,7 +178,6 @@ class UIManager {
         requestAnimationFrame(animateScroll);
     }
 
-    
     validateInputs() {
         const startAddress = document.getElementById('startAddress').value.trim();
         const endAddress = document.getElementById('endAddress').value.trim();
@@ -212,7 +195,6 @@ class UIManager {
         return true;
     }
 
-
     formatDistance(meters) {
         if (meters >= 1000) {
             return `${(meters / 1000).toFixed(2)} km`;
@@ -220,7 +202,6 @@ class UIManager {
         return `${Math.round(meters)} m`;
     }
 
-    
     formatDuration(seconds) {
         const minutes = Math.round(seconds / 60);
         if (minutes >= 60) {
@@ -231,7 +212,6 @@ class UIManager {
         return `${minutes} min`;
     }
 
-   
     pulseElement(element, duration = 1000) {
         element.style.animation = `pulse ${duration}ms ease-in-out`;
         setTimeout(() => {
@@ -239,7 +219,6 @@ class UIManager {
         }, duration);
     }
 
-  
     handleResize() {
         const isMobile = window.innerWidth <= 768;
         const controlPanel = document.querySelector('.control-panel');
@@ -264,23 +243,19 @@ class UIManager {
     }
 }
 
-
 const uiManager = new UIManager();
 
 function showStatusMessage(message, type = 'info', duration = 4000) {
     uiManager.showStatusMessage(message, type, duration);
 }
 
-
 window.addEventListener('resize', () => {
     uiManager.handleResize();
 });
 
-
 document.addEventListener('DOMContentLoaded', () => {
     uiManager.handleResize();
 });
-
 
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = UIManager;
