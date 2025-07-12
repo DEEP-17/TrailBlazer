@@ -1,5 +1,5 @@
 :root {
-
+  /* Light theme colors */
   --bg-primary: #ffffff;
   --bg-secondary: #f8fafc;
   --bg-tertiary: #f1f5f9;
@@ -11,6 +11,7 @@
   --shadow-medium: rgba(0, 0, 0, 0.1);
   --shadow-heavy: rgba(0, 0, 0, 0.15);
   
+  /* Brand colors */
   --primary: #3b82f6;
   --primary-hover: #2563eb;
   --success: #10b981;
@@ -20,11 +21,12 @@
   --danger: #ef4444;
   --danger-hover: #dc2626;
   
-
+  /* Glassmorphism */
   --glass-bg: rgba(255, 255, 255, 0.85);
   --glass-border: rgba(255, 255, 255, 0.2);
   --glass-shadow: rgba(0, 0, 0, 0.1);
-
+  
+  /* Panel dimensions */
   --sidebar-width: 350px;
   --sidebar-collapsed-width: 60px;
   --directions-height: 300px;
@@ -32,7 +34,7 @@
 }
 
 [data-theme="dark"] {
-  
+  /* Dark theme colors */
   --bg-primary: #0f172a;
   --bg-secondary: #1e293b;
   --bg-tertiary: #334155;
@@ -44,7 +46,7 @@
   --shadow-medium: rgba(0, 0, 0, 0.3);
   --shadow-heavy: rgba(0, 0, 0, 0.4);
   
- 
+  /* Glassmorphism dark */
   --glass-bg: rgba(15, 23, 42, 0.85);
   --glass-border: rgba(255, 255, 255, 0.1);
   --glass-shadow: rgba(0, 0, 0, 0.3);
@@ -71,6 +73,7 @@ body {
   overflow: hidden;
 }
 
+/* Header */
 .header {
   background: var(--glass-bg);
   backdrop-filter: blur(10px);
@@ -104,6 +107,9 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .sidebar-toggle:hover {
@@ -169,14 +175,14 @@ body {
   transform: rotate(15deg);
 }
 
-
+/* Main Content */
 .main-content {
   display: flex;
   flex: 1;
   overflow: hidden;
 }
 
-
+/* Control Panel */
 .control-panel {
   width: var(--sidebar-width);
   background: var(--glass-bg);
@@ -207,7 +213,7 @@ body {
   pointer-events: none;
 }
 
-
+/* Collapsed sidebar icon display */
 .control-panel.collapsed::after {
   content: "🗺️";
   position: absolute;
@@ -260,6 +266,10 @@ body {
   color: var(--text-primary);
   font-size: 0.875rem;
   transition: all 0.3s ease;
+  min-height: 44px;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
 }
 
 .location-input:focus,
@@ -280,6 +290,9 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .current-location-btn:hover {
@@ -288,6 +301,7 @@ body {
   box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
 }
 
+/* Autocomplete */
 .autocomplete-suggestions {
   position: absolute;
   top: 100%;
@@ -309,6 +323,10 @@ body {
   border-bottom: 1px solid var(--border-color);
   font-size: 0.875rem;
   transition: background-color 0.2s ease;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .autocomplete-suggestion:hover {
@@ -334,6 +352,8 @@ body {
   justify-content: flex-start;
   width: 100%;
   margin-bottom: 0.75rem;
+  min-height: 44px;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .dijkstra-btn {
@@ -352,7 +372,7 @@ body {
   transform: none;
 }
 
-
+/* Waypoint Controls */
 .waypoint-controls {
   display: flex;
   gap: 0.75rem;
@@ -373,6 +393,8 @@ body {
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
+  min-height: 44px;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .waypoint-btn:hover {
@@ -391,6 +413,7 @@ body {
   color: var(--danger);
 }
 
+/* Waypoint Search Container */
 .waypoint-search-container {
   margin-top: 1rem;
   padding: 1rem;
@@ -411,6 +434,9 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .cancel-search-btn:hover {
@@ -430,6 +456,7 @@ body {
   }
 }
 
+/* Waypoint List */
 .waypoint-list {
   max-height: 150px;
   overflow-y: auto;
@@ -456,7 +483,7 @@ body {
   font-size: 0.75rem;
 }
 
-
+/* Route Info */
 .route-info {
   background: var(--bg-secondary);
   border-radius: 12px;
@@ -486,6 +513,7 @@ body {
   color: var(--primary);
 }
 
+/* Map Container */
 .map-container {
   flex: 1;
   position: relative;
@@ -499,7 +527,7 @@ body {
   transition: filter 0.3s ease;
 }
 
-
+/* Loading Overlay */
 .loading-overlay {
   position: absolute;
   top: 0;
@@ -535,6 +563,7 @@ body {
   100% { transform: rotate(360deg); }
 }
 
+/* Directions Panel */
 .directions-panel {
   position: fixed;
   bottom: 0;
@@ -557,7 +586,7 @@ body {
   transform: translateY(calc(100% - var(--directions-collapsed-height)));
 }
 
-
+/* Adjust directions panel when sidebar is collapsed */
 .control-panel.collapsed ~ .map-container ~ .directions-panel {
   left: var(--sidebar-collapsed-width);
 }
@@ -591,6 +620,9 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .directions-toggle:hover {
@@ -652,7 +684,7 @@ body {
   color: var(--text-muted);
 }
 
-
+/* Status Messages */
 .status-messages {
   position: fixed;
   top: 1rem;
@@ -724,7 +756,7 @@ body {
   transform: translateY(-1px);
 }
 
-
+/* Button Icons and Text */
 .btn-icon {
   font-size: 1rem;
   flex-shrink: 0;
@@ -741,34 +773,34 @@ body {
   width: 0;
 }
 
+/* Responsive Design */
 @media (max-width: 768px) {
-  .main-content {
-    flex-direction: column;
-  }
-  
   .control-panel {
-    width: 100% !important;
-    max-height: 50vh;
-    order: 2;
-  }
-  
-  .control-panel.collapsed {
-    max-height: 60px;
-  }
-  
-  .control-panel.collapsed .panel-content {
-    opacity: 1;
-    pointer-events: auto;
-  }
-  
-  .control-panel.collapsed .btn-text {
-    opacity: 1;
-    width: auto;
+    transition: transform 0.3s ease;
   }
   
   .map-container {
-    height: 50vh;
-    order: 1;
+    width: 100%;
+    height: 100vh;
+  }
+  
+  .main-content {
+    position: relative;
+  }
+  
+  .mobile-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    display: none;
+  }
+  
+  .mobile-overlay.show {
+    display: block;
   }
   
   .directions-panel {
@@ -786,9 +818,227 @@ body {
   .header-left {
     gap: 0.5rem;
   }
+  
+  .panel-content {
+    padding: 1rem;
+  }
+  
+  .input-wrapper {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  .current-location-btn,
+  .cancel-search-btn {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .waypoint-controls {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  .waypoint-btn {
+    width: 100%;
+    padding: 1rem;
+    font-size: 1rem;
+  }
+  
+  .algorithm-btn {
+    padding: 1.25rem;
+    font-size: 1rem;
+  }
+  
+  .status-messages {
+    top: 0.5rem;
+    right: 0.5rem;
+    left: 0.5rem;
+  }
+  
+  .status-message {
+    max-width: none;
+    margin-bottom: 0.25rem;
+  }
+  
+  .directions-panel {
+    height: 40vh;
+    transform: translateY(calc(100% - 50px));
+  }
+  
+  .directions-collapsed-height: 50px;
+  
+  .autocomplete-suggestions {
+    max-height: 150px;
+    font-size: 1rem;
+  }
+  
+  .autocomplete-suggestion {
+    padding: 1rem;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+  }
 }
 
+@media (max-width: 480px) {
+  .header-content {
+    padding: 0.75rem;
+  }
+  
+  .app-title {
+    font-size: 1.1rem;
+  }
+  
+  .sidebar-toggle,
+  .theme-toggle {
+    padding: 0.5rem;
+    min-width: 44px;
+    min-height: 44px;
+  }
+  
+  .panel-content {
+    padding: 0.75rem;
+  }
+  
+  .section-title {
+    font-size: 1rem;
+  }
+  
+  .location-input,
+  .travel-mode-select {
+    padding: 1rem;
+    font-size: 1rem;
+    min-height: 44px;
+  }
+  
+  .current-location-btn,
+  .cancel-search-btn {
+    padding: 1rem;
+    min-width: 44px;
+    min-height: 44px;
+  }
+  
+  .waypoint-btn {
+    padding: 1rem;
+    min-height: 44px;
+    font-size: 0.9rem;
+  }
+  
+  .algorithm-btn {
+    padding: 1.25rem;
+    min-height: 50px;
+    font-size: 0.95rem;
+  }
+  
+  .btn-icon {
+    font-size: 1.1rem;
+  }
+  
+  .route-info {
+    padding: 0.75rem;
+  }
+  
+  .info-item {
+    margin-bottom: 0.5rem;
+  }
+  
+  .info-label,
+  .info-value {
+    font-size: 0.9rem;
+  }
+  
+  .waypoint-item {
+    padding: 0.75rem;
+    font-size: 0.9rem;
+  }
+  
+  .waypoint-remove {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.8rem;
+    min-height: 36px;
+  }
+  
+  .directions-panel {
+    height: 35vh;
+  }
+  
+  .directions-header {
+    padding: 0.75rem;
+  }
+  
+  .directions-title {
+    font-size: 1rem;
+  }
+  
+  .directions-toggle {
+    padding: 0.5rem;
+    min-width: 44px;
+    min-height: 44px;
+  }
+  
+  .direction-step {
+    padding: 0.75rem;
+    font-size: 0.9rem;
+  }
+  
+  .step-number {
+    width: 28px;
+    height: 28px;
+    font-size: 0.8rem;
+  }
+  
+  .loading-overlay {
+    padding: 1rem;
+  }
+  
+  .loading-text {
+    font-size: 0.9rem;
+    text-align: center;
+  }
+}
 
+@media (max-width: 320px) {
+  .header-content {
+    padding: 0.5rem;
+  }
+  
+  .app-title {
+    font-size: 1rem;
+  }
+  
+  .icon {
+    font-size: 1.2rem;
+  }
+  
+  .panel-content {
+    padding: 0.5rem;
+  }
+  
+  .section-title {
+    font-size: 0.95rem;
+    margin-bottom: 0.75rem;
+  }
+  
+  .input-group {
+    margin-bottom: 1rem;
+  }
+  
+  .panel-section {
+    margin-bottom: 1.5rem;
+  }
+  
+  .status-message {
+    padding: 0.75rem 1rem;
+    font-size: 0.9rem;
+  }
+  
+  .directions-panel {
+    height: 30vh;
+  }
+}
+
+/* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
 }
@@ -806,6 +1056,7 @@ body {
   background: var(--text-muted);
 }
 
+/* Map custom styles */
 .leaflet-routing-container {
   display: none !important;
 }
@@ -814,7 +1065,7 @@ body {
   display: none;
 }
 
-
+/* Custom marker styles */
 .custom-marker {
   background: var(--primary);
   border: 3px solid white;
@@ -834,6 +1085,7 @@ body {
   background: var(--warning) !important;
 }
 
+/* Dark theme map controls styling */
 [data-theme="dark"] .leaflet-control-zoom a,
 [data-theme="dark"] .leaflet-control-attribution {
   background-color: var(--bg-secondary) !important;
