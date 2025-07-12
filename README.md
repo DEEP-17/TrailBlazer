@@ -14,13 +14,14 @@ A sophisticated, interactive web application that demonstrates **Dijkstra's path
 - **Dijkstra's Algorithm Visualization** - Watch the shortest path algorithm in action
 - **Real-time Route Calculation** - Powered by OpenStreetMap Routing Machine (OSRM)
 - **Multiple Travel Modes** - Walking (4.5 km/h), Cycling (15 km/h), Driving (35 km/h)
-- **Advanced Waypoint System** - Add unlimited intermediate stops with search functionality
+- **Advanced Waypoint System** - Add unlimited intermediate stops with intelligent search
 - **Turn-by-Turn Navigation** - Detailed step-by-step directions
+- **On-Demand Route Display** - Routes only appear after running Dijkstra's algorithm
 
 ### 🎨 User Interface Excellence
-- **Responsive Design** - Seamless experience across desktop, tablet, and mobile
+- **Fully Responsive Design** - Seamless experience across desktop, tablet, and mobile
+- **Mobile-First Approach** - Collapsible sidebar, touch-optimized controls
 - **Dark/Light Theme System** - Toggle between themes with automatic map adaptation
-- **Collapsible Sidebar** - Maximize map viewing area when needed
 - **Smart Autocomplete Search** - Intelligent location suggestions for all inputs
 - **Real-time Status Notifications** - Instant feedback for all user actions
 - **Professional Animations** - Smooth transitions and micro-interactions
@@ -31,6 +32,7 @@ A sophisticated, interactive web application that demonstrates **Dijkstra's path
 - **Reverse Geocoding** - Automatic conversion of coordinates to readable addresses
 - **Debounced Search** - Optimized API calls with 300ms delay
 - **Keyboard Navigation** - Enter to select, Escape to cancel
+- **Real Place Names** - Waypoints display actual location names
 
 ## 🚀 Quick Start Guide
 
@@ -43,11 +45,8 @@ A sophisticated, interactive web application that demonstrates **Dijkstra's path
 
 #### Method 1: Direct Download
 ```bash
-# Clone the repository
 git clone https://github.com/yourusername/trailblazer-pathfinding.git
 cd trailblazer-pathfinding
-
-# Open in browser
 open index.html
 ```
 
@@ -87,49 +86,63 @@ flowchart TD
     G -->|🎯 Set End Location| I[🔍 Search Location]
     G -->|➕ Add Waypoint| J[🔍 Search Waypoint]
     G -->|🌙 Toggle Theme| K[🎨 Switch Theme & Map Tiles]
-    G -->|🔄 Run Algorithm| L[⚡ Execute Dijkstra's Algorithm]
+    G -->|☰ Toggle Sidebar| L[📱 Show/Hide Mobile Sidebar]
+    G -->|🔄 Run Algorithm| M[⚡ Execute Dijkstra's Algorithm]
     
-    H --> M[📍 Place Start Marker]
-    I --> N[🎯 Place End Marker]
-    J --> O[➕ Add Waypoint Marker]
+    H --> N[📍 Place Start Marker]
+    I --> O[🎯 Place End Marker]
+    J --> P[➕ Add Waypoint Marker with Real Name]
     
-    M --> P{✅ Both Points Set?}
-    N --> P
-    O --> P
+    N --> Q{✅ Both Points Set?}
+    O --> Q
+    P --> Q
     
-    P -->|Yes| Q[🛣️ Calculate Real Route via OSRM]
-    P -->|No| R[⏳ Wait for Complete Input]
+    Q -->|Yes| R[🔘 Enable Dijkstra Button]
+    Q -->|No| S[⏳ Keep Button Disabled]
     
-    Q --> S[📊 Create Graph from Route Points]
-    S --> T[🔗 Generate Nodes and Edges]
-    T --> U[📏 Calculate Haversine Distances]
+    M --> T{✅ Valid Route Points?}
+    T -->|No| U[❌ Show Error Message]
+    T -->|Yes| V[🛣️ Calculate Real Route via OSRM]
     
-    L --> V[🧠 Dijkstra's Algorithm Execution]
-    V --> W[📋 Initialize Distance & Previous Maps]
-    W --> X[🔄 Process Unvisited Nodes]
-    X --> Y[📊 Find Minimum Distance Node]
-    Y --> Z[🔍 Update Neighbor Distances]
-    Z --> AA{🎯 Reached Destination?}
+    V --> W[📊 Create Graph from Route Points]
+    W --> X[🔗 Generate Nodes and Edges]
+    X --> Y[📏 Calculate Haversine Distances]
+    Y --> Z[🧠 Dijkstra's Algorithm Execution]
     
-    AA -->|No| X
-    AA -->|Yes| BB[🛤️ Reconstruct Optimal Path]
+    Z --> AA[📋 Initialize Distance & Previous Maps]
+    AA --> BB[🔄 Process Unvisited Nodes]
+    BB --> CC[📊 Find Minimum Distance Node]
+    CC --> DD[🔍 Update Neighbor Distances]
+    DD --> EE{🎯 Reached Destination?}
     
-    BB --> CC[📍 Display Route on Map]
-    CC --> DD[📋 Show Turn-by-Turn Directions]
-    DD --> EE[📊 Update Route Statistics]
-    EE --> FF[✅ Algorithm Complete]
+    EE -->|No| BB
+    EE -->|Yes| FF[🛤️ Reconstruct Optimal Path]
     
-    K --> GG[🗺️ Update Map Tiles]
-    GG --> HH[💾 Save Theme Preference]
+    FF --> GG[📍 Display Route on Map]
+    GG --> HH[📋 Show Turn-by-Turn Directions]
+    HH --> II[📊 Update Route Statistics]
+    II --> JJ[✅ Algorithm Complete]
     
+    K --> KK[🗺️ Update Map Tiles]
+    KK --> LL[💾 Save Theme Preference]
+    
+    L --> MM{📱 Mobile Device?}
+    MM -->|Yes| NN[📱 Slide Sidebar with Overlay]
+    MM -->|No| OO[🖥️ Collapse to 60px Width]
+    
+    S --> G
     R --> G
-    FF --> G
-    HH --> G
+    JJ --> G
+    LL --> G
+    NN --> G
+    OO --> G
+    U --> G
     
     style A fill:#e1f5fe
-    style V fill:#f3e5f5
-    style BB fill:#e8f5e8
-    style FF fill:#fff3e0
+    style Z fill:#f3e5f5
+    style FF fill:#e8f5e8
+    style JJ fill:#fff3e0
+    style MM fill:#fce4ec
 ```
 
 ## 🎮 Detailed Usage Guide
@@ -156,7 +169,7 @@ Method 2: GPS Location
 2. Type your destination address
 3. Select from autocomplete suggestions
 4. Red marker appears on map
-5. Route automatically calculates and displays
+5. Dijkstra button becomes enabled
 ```
 
 #### Step 3: Choose Travel Mode
@@ -177,6 +190,15 @@ Method 2: GPS Location
 - Uses roads and highways
 ```
 
+#### Step 4: Run Dijkstra's Algorithm
+```
+1. Ensure start and end points are set
+2. Click "Run Dijkstra's Algorithm" button
+3. Loading overlay appears with spinner
+4. Route appears on map with turn-by-turn directions
+5. Route information panel updates with statistics
+```
+
 ### ➕ Advanced Waypoint Management
 
 #### Adding Waypoints via Search
@@ -184,58 +206,55 @@ Method 2: GPS Location
 1. Click "Search & Add Waypoint" button
 2. Search input field appears with focus
 3. Type location name (minimum 3 characters)
-4. Autocomplete suggestions populate
+4. Autocomplete suggestions populate with real places
 5. Click desired location from suggestions
-6. Orange waypoint marker added to map
-7. Route recalculates through all waypoints
-8. Search field automatically hides
+6. Orange waypoint marker added with actual place name
+7. Search field automatically hides
+8. Waypoint appears in list with real location name
 ```
 
 #### Managing Waypoints
 ```
 View Waypoints:
-- All waypoints listed in sidebar
-- Shows actual place names (not generic labels)
+- All waypoints listed with actual place names
+- Shows real locations like "Times Square, New York"
 - Long names truncated with "..." (hover for full name)
 
 Remove Individual Waypoints:
 - Click "Remove" button next to waypoint name
 - Marker disappears from map
-- Route recalculates automatically
+- List updates automatically
 
 Clear All Waypoints:
 - Click "Clear All" button
 - All waypoint markers removed
-- Route returns to direct start-to-end path
+- Waypoint list clears
 ```
 
-### 🧠 Running Dijkstra's Algorithm
+### 📱 Mobile Experience
 
-#### Algorithm Execution Process
+#### Sidebar Behavior
 ```
-1. Ensure start and end points are set
-2. Click "Run Dijkstra's Algorithm" button
-3. Loading overlay appears with spinner
-4. Algorithm processes route graph:
-   - Creates nodes from route points
-   - Calculates distances between nodes
-   - Finds shortest path using Dijkstra's method
-5. Visual feedback during processing
-6. Results displayed with success message
+Mobile (≤768px):
+- Sidebar collapsed by default
+- Tap hamburger (☰) button to open
+- Sidebar slides in as overlay
+- Dark backdrop appears behind sidebar
+- Tap outside or hamburger to close
+
+Desktop (>768px):
+- Normal sidebar behavior
+- Toggle collapses to 60px width
+- No overlay needed
 ```
 
-#### Understanding the Results
+#### Touch Optimizations
 ```
-Route Information Panel Shows:
-- Distance: Total route length in km/miles
-- Duration: Estimated travel time
-- Est. Time: Calculated based on travel mode
-
-Turn-by-Turn Directions:
-- Step-by-step navigation instructions
-- Distance for each segment
-- Numbered steps for easy following
-- Expandable/collapsible panel
+- 44px minimum touch targets
+- Larger buttons and inputs
+- Touch-friendly autocomplete
+- Smooth slide animations
+- Orientation change support
 ```
 
 ### 🎨 Theme and Interface Controls
@@ -253,107 +272,40 @@ Dark Theme:
 - Dark blue interface with slate colors
 - Reduced eye strain for low-light use
 - Maintains excellent readability
+- Loads correctly from first page load
 ```
 
 #### Interface Management
 ```
-Sidebar Toggle (☰):
-- Collapse sidebar to maximize map view
-- Sidebar width: 350px → 60px
-- App title fades out when collapsed
-- Map automatically resizes
-
 Directions Panel (▲/▼):
 - Expand/collapse turn-by-turn directions
-- Default height: 300px
+- Automatically shows when algorithm runs
 - Slides up from bottom of screen
-- Automatically shows when route calculated
+- Touch-friendly toggle button
 ```
 
-## 🏗️ Technical Architecture Deep Dive
+## 🏗️ Technical Architecture
 
-### 📁 File Structure and Responsibilities
-
+### 📁 File Structure
 ```
 trailblazer-pathfinding/
 ├── 📄 index.html              # Main HTML structure and layout
-├── 🎨 styles.css              # Complete CSS styling and themes
+├── 🎨 styles.css              # Complete CSS styling and responsive design
 ├── ⚡ script.js               # Core application logic and map handling
 ├── 🧠 pathfinding.js          # Dijkstra's algorithm implementation
 ├── 🎛️ ui.js                   # UI management and theme system
 └── 📖 README.md               # This documentation file
 ```
 
-#### index.html - Structure & Layout
-```html
-Key Components:
-- Semantic HTML5 structure
-- Responsive meta viewport
-- External library imports (Leaflet, Routing Machine)
-- Accessibility-friendly form controls
-- Status message container
-- Loading overlay system
-```
-
-#### styles.css - Styling & Theming
-```css
-Features:
-- CSS Custom Properties for theming
-- Glassmorphism effects with backdrop-filter
-- Responsive breakpoints for mobile/desktop
-- Smooth animations and transitions
-- Dark/light theme variables
-- Professional color palette
-```
-
-#### script.js - Core Application Logic
-```javascript
-Primary Responsibilities:
-- Leaflet map initialization and management
-- Event listener setup and handling
-- OSRM routing integration
-- Marker creation and management
-- Autocomplete search implementation
-- Theme switching logic
-- UI state management
-```
-
-#### pathfinding.js - Algorithm Implementation
-```javascript
-Core Functions:
-- Dijkstra's algorithm implementation
-- Graph creation from route points
-- Haversine distance calculations
-- Path reconstruction
-- Node and edge management
-- Algorithm visualization timing
-```
-
-#### ui.js - User Interface Management
-```javascript
-UI Components:
-- Theme system management
-- Status message handling
-- Loading overlay control
-- Sidebar collapse/expand
-- Directions panel toggle
-- Input validation
-- Animation controls
-```
-
-### 🔗 API Integrations and Data Flow
+### 🔗 API Integrations
 
 #### OpenStreetMap Nominatim API
 ```javascript
 Purpose: Geocoding and reverse geocoding
-Endpoints:
-- Search: https://nominatim.openstreetmap.org/search
-- Reverse: https://nominatim.openstreetmap.org/reverse
-
 Features:
 - Address to coordinates conversion
 - Coordinates to address conversion
-- Autocomplete suggestions
+- Autocomplete suggestions with real place names
 - Rate limiting respect (300ms debounce)
 - Error handling and fallbacks
 ```
@@ -361,10 +313,8 @@ Features:
 #### OSRM (Open Source Routing Machine)
 ```javascript
 Purpose: Real-world route calculation
-Endpoint: https://router.project-osrm.org/route/v1
 Profiles: driving, cycling, foot
-
-Capabilities:
+Features:
 - Multi-modal routing
 - Turn-by-turn directions
 - Route optimization
@@ -372,64 +322,23 @@ Capabilities:
 - Distance and time calculations
 ```
 
-#### CartoDB Map Tiles
+### 🧠 Algorithm Implementation
+
+#### Dijkstra's Algorithm
 ```javascript
-Light Theme: OpenStreetMap standard tiles
-Dark Theme: CartoDB Dark Matter tiles
-
-Features:
-- High-quality map rendering
-- No API key required
-- Reliable CDN delivery
-- Proper attribution
-- Zoom levels 1-19
-```
-
-### 🧠 Algorithm Implementation Details
-
-#### Dijkstra's Algorithm Breakdown
-
-```javascript
-Data Structures Used:
-- Map<Node, Number> distances    // Distance from start to each node
-- Map<Node, Node> previous       // Previous node in optimal path
-- Set<Node> unvisited           // Nodes not yet processed
+Key Features:
+- Graph creation from route points
+- Haversine distance calculations
+- Shortest path finding
+- Visual feedback during processing
+- Route reconstruction and display
 
 Time Complexity: O((V + E) log V)
 Space Complexity: O(V)
 Where V = vertices (nodes), E = edges
 ```
 
-#### Graph Creation Process
-
-```javascript
-Input: Array of [latitude, longitude] coordinates
-Process:
-1. Convert coordinates to node objects
-2. Calculate Haversine distances between consecutive nodes
-3. Create bidirectional edges with distance weights
-4. Build adjacency list representation
-
-Output: {nodes: Array, edges: Map}
-```
-
-#### Haversine Distance Formula
-
-```javascript
-Purpose: Calculate great-circle distance between two points on Earth
-Formula: 
-  a = sin²(Δφ/2) + cos φ1 ⋅ cos φ2 ⋅ sin²(Δλ/2)
-  c = 2 ⋅ atan2(√a, √(1−a))
-  d = R ⋅ c
-
-Where:
-  φ = latitude in radians
-  λ = longitude in radians
-  R = Earth's radius (6,371 km)
-  Δ = difference between coordinates
-```
-
-### 📱 Responsive Design Implementation
+### 📱 Responsive Design
 
 #### Breakpoint Strategy
 ```css
@@ -444,285 +353,101 @@ Mobile (≤ 768px):
 - Vertical layout
 - Touch-optimized controls
 - Simplified interface
+
+Small Mobile (≤ 480px):
+- Optimized spacing
+- Larger text and buttons
+- Better proportions
+
+Extra Small (≤ 320px):
+- Minimal spacing
+- Maximum content utilization
 ```
 
-#### Mobile Optimizations
-```javascript
-Features:
-- Touch-friendly button sizes (44px minimum)
-- Swipe gestures for sidebar
-- Optimized autocomplete for mobile keyboards
-- Responsive map controls
-- Simplified directions panel
-```
+## 🔧 Key Features Explained
 
-## 🔧 Advanced Customization Guide
+### 🎯 Route Display Logic
+- **Routes only appear after clicking "Run Dijkstra's Algorithm"**
+- **Markers are placed immediately** when locations are set
+- **Button is disabled** until both start and end points are set
+- **Visual feedback** shows when algorithm can be run
 
-### 🎨 Theme Customization
+### 🏷️ Real Place Names
+- **Waypoints show actual location names** instead of generic labels
+- **Reverse geocoding** converts coordinates to readable addresses
+- **Truncated display** for long names with hover tooltips
+- **Fallback to coordinates** if geocoding fails
 
-#### Adding New Themes
-```css
-/* Add to styles.css */
-[data-theme="custom"] {
-  --bg-primary: #your-color;
-  --text-primary: #your-color;
-  --primary: #your-accent-color;
-  /* ... other variables */
-}
-```
+### 📱 Mobile-First Design
+- **Sidebar collapsed by default** on mobile devices
+- **Touch-optimized interactions** throughout the interface
+- **Responsive breakpoints** for all screen sizes
+- **Orientation change support** for mobile devices
 
-#### Custom Map Tiles
-```javascript
-// Add to updateMapTiles() function in script.js
-if (currentTheme === 'custom') {
-    currentTileLayer = L.tileLayer('https://your-tile-server/{z}/{x}/{y}.png', {
-        attribution: 'Your Attribution'
-    }).addTo(map);
-}
-```
+### 🎨 Theme System
+- **Automatic theme detection** and application
+- **Map tiles update** to match selected theme
+- **Persistent theme preference** saved in localStorage
+- **Smooth transitions** between light and dark modes
 
-### 🗺️ Map Customization
+## 🧪 Browser Compatibility
 
-#### Custom Marker Styles
-```javascript
-// Modify createCustomIcon() function
-function createCustomIcon(type) {
-    const styles = {
-        start: { color: '#your-color', icon: '🏁' },
-        end: { color: '#your-color', icon: '🎯' },
-        waypoint: { color: '#your-color', icon: '📍' }
-    };
-    // Implementation...
-}
-```
+### ✅ Supported Browsers
+- **Chrome 80+** (Recommended)
+- **Firefox 75+**
+- **Safari 13+**
+- **Edge 80+**
+- **Mobile browsers** (iOS Safari, Chrome Mobile)
 
-#### Additional Map Controls
-```javascript
-// Add custom controls to map
-const customControl = L.control({position: 'topright'});
-customControl.onAdd = function(map) {
-    const div = L.DomUtil.create('div', 'custom-control');
-    div.innerHTML = '<button>Custom Action</button>';
-    return div;
-};
-customControl.addTo(map);
-```
+### 📱 Mobile Support
+- **iOS Safari 13+**
+- **Chrome Mobile 80+**
+- **Samsung Internet 12+**
+- **Firefox Mobile 75+**
 
-### 🧠 Algorithm Extensions
+## 🚀 Performance Features
 
-#### Adding New Pathfinding Algorithms
-```javascript
-// Add to pathfinding.js
-async bellmanFord(startNode, endNode, nodes, edges) {
-    // Implementation for Bellman-Ford algorithm
-    // Handles negative edge weights
-    // Time complexity: O(VE)
-}
+### ⚡ Optimizations
+- **Debounced search** (300ms) to reduce API calls
+- **Efficient DOM manipulation** for smooth interactions
+- **CSS transforms** for hardware-accelerated animations
+- **Lazy loading** of map tiles
+- **Memory management** with proper cleanup
 
-async floydWarshall(nodes, edges) {
-    // Implementation for Floyd-Warshall algorithm
-    // All-pairs shortest path
-    // Time complexity: O(V³)
-}
-```
+### 📊 Typical Performance
+- **Initial load time**: < 2 seconds
+- **Route calculation**: < 1 second
+- **Theme switching**: < 300ms
+- **Search autocomplete**: < 500ms response
+- **Algorithm execution**: < 2 seconds (with visualization)
 
-#### Custom Heuristic Functions
-```javascript
-// For future A* implementation
-function manhattanDistance(node1, node2) {
-    return Math.abs(node1.x - node2.x) + Math.abs(node1.y - node2.y);
-}
+## 🤝 Contributing
 
-function euclideanDistance(node1, node2) {
-    return Math.sqrt(Math.pow(node1.x - node2.x, 2) + Math.pow(node1.y - node2.y, 2));
-}
-```
-
-## 🚀 Performance Optimization
-
-### ⚡ Current Optimizations
-
-#### API Call Optimization
-```javascript
-Features:
-- 300ms debounce on search inputs
-- Request cancellation for outdated searches
-- Caching of geocoding results
-- Minimal API calls through smart state management
-```
-
-#### Rendering Optimization
-```javascript
-Techniques:
-- CSS transforms for smooth animations
-- RequestAnimationFrame for smooth scrolling
-- Efficient DOM manipulation
-- Lazy loading of map tiles
-- Optimized marker clustering for large datasets
-```
-
-#### Memory Management
-```javascript
-Practices:
-- Proper event listener cleanup
-- Map layer removal before adding new ones
-- Garbage collection friendly coding
-- Minimal global variables
-- Efficient data structure usage
-```
-
-### 📊 Performance Metrics
-
-```
-Typical Performance:
-- Initial load time: < 2 seconds
-- Route calculation: < 1 second
-- Theme switching: < 300ms
-- Search autocomplete: < 500ms response
-- Map tile loading: < 1 second per tile
-- Algorithm execution: < 2 seconds (with visualization delays)
-```
-
-## 🧪 Testing and Quality Assurance
-
-### ✅ Manual Testing Checklist
-
-#### Core Functionality
-```
-□ Start location search and selection
-□ End location search and selection
-□ Waypoint addition and removal
-□ Route calculation accuracy
-□ Dijkstra's algorithm execution
-□ Turn-by-turn directions display
-□ Theme switching functionality
-□ Responsive design on multiple devices
-```
-
-#### Edge Cases
-```
-□ Invalid location searches
-□ Network connectivity issues
-□ GPS permission denied
-□ Very long route calculations
-□ Multiple rapid theme switches
-□ Sidebar collapse/expand during route calculation
-□ Mobile device orientation changes
-```
-
-#### Browser Compatibility
-```
-□ Chrome (latest 3 versions)
-□ Firefox (latest 3 versions)
-□ Safari (latest 2 versions)
-□ Edge (latest 2 versions)
-□ Mobile browsers (iOS Safari, Chrome Mobile)
-```
-
-### 🐛 Common Issues and Solutions
-
-#### Issue: Map tiles not loading
-```
-Solution:
-1. Check internet connection
-2. Verify tile server availability
-3. Clear browser cache
-4. Check for CORS issues in console
-```
-
-#### Issue: Geocoding not working
-```
-Solution:
-1. Verify Nominatim API accessibility
-2. Check for rate limiting (wait 1 minute)
-3. Try different search terms
-4. Check browser console for errors
-```
-
-#### Issue: Dark theme map appears grey
-```
-Solution:
-1. Refresh the page
-2. Toggle theme twice
-3. Check if CartoDB tiles are accessible
-4. Verify CSS theme variables are loaded
-```
-
-## 🤝 Contributing Guidelines
-
-### 🔄 Development Workflow
-
-#### Setting Up Development Environment
+### 🔄 Development Setup
 ```bash
 1. Fork the repository on GitHub
 2. Clone your fork locally
 3. Create a feature branch
 4. Make your changes
-5. Test thoroughly
+5. Test thoroughly on multiple devices
 6. Submit a pull request
 ```
 
-#### Code Style Guidelines
-```javascript
-Standards:
-- Use camelCase for variables and functions
-- Use PascalCase for classes
-- Use UPPER_SNAKE_CASE for constants
-- Indent with 4 spaces
-- Use semicolons consistently
-- Add JSDoc comments for functions
-- Follow existing naming conventions
-```
-
-#### Commit Message Format
-```
-Format: type(scope): description
-
-Types:
-- feat: New feature
-- fix: Bug fix
-- docs: Documentation changes
-- style: Code style changes
-- refactor: Code refactoring
-- test: Adding tests
-- chore: Maintenance tasks
-
-Examples:
-feat(pathfinding): add Bellman-Ford algorithm
-fix(ui): resolve dark theme loading issue
-docs(readme): update installation instructions
-```
+### 📝 Code Standards
+- **Clean, comment-free production code**
+- **Consistent naming conventions**
+- **Mobile-first responsive design**
+- **Accessibility considerations**
+- **Cross-browser compatibility**
 
 ### 🎯 Areas for Contribution
+- **Additional pathfinding algorithms** (A*, Bellman-Ford)
+- **Offline map functionality**
+- **Route export capabilities** (GPX, KML)
+- **Advanced mobile gestures**
+- **Performance optimizations**
 
-#### High Priority
-```
-- Additional pathfinding algorithms (A*, Bellman-Ford)
-- Offline map tile caching
-- Route export functionality (GPX, KML)
-- Performance optimizations
-- Accessibility improvements
-```
-
-#### Medium Priority
-```
-- Additional map tile providers
-- Custom marker upload
-- Route sharing via URL
-- Multi-language support
-- Advanced route preferences
-```
-
-#### Low Priority
-```
-- Social media integration
-- Route history storage
-- Advanced statistics
-- Custom themes
-- Plugin system
-```
-
-## 📄 License and Legal
+## 📄 License
 
 ### MIT License
 ```
@@ -737,109 +462,52 @@ furnished to do so, subject to the following conditions:
 
 The above copyright notice and this permission notice shall be included in all
 copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
 ```
 
-### Third-Party Licenses
-```
-Dependencies:
-- Leaflet.js: BSD 2-Clause License
-- Leaflet Routing Machine: ISC License
-- OpenStreetMap: Open Database License (ODbL)
-- CartoDB: Creative Commons Attribution 3.0
-- Nominatim: Open Database License (ODbL)
-```
-
-## 🙏 Acknowledgments and Credits
+## 🙏 Acknowledgments
 
 ### 🌟 Open Source Projects
-- **[Leaflet.js](https://leafletjs.com/)** - Excellent open-source mapping library
-- **[OpenStreetMap](https://www.openstreetmap.org/)** - Collaborative mapping project
+- **[Leaflet.js](https://leafletjs.com/)** - Excellent mapping library
+- **[OpenStreetMap](https://www.openstreetmap.org/)** - Collaborative mapping data
 - **[OSRM](http://project-osrm.org/)** - High-performance routing engine
-- **[CartoDB](https://carto.com/)** - Beautiful map tile services
+- **[CartoDB](https://carto.com/)** - Beautiful dark theme map tiles
 - **[Nominatim](https://nominatim.org/)** - Geocoding service
 
 ### 🎨 Design Inspiration
-- **Apple Maps** - Clean, intuitive interface design
+- **Apple Maps** - Clean, intuitive mobile interface
 - **Google Maps** - Comprehensive feature set
-- **Mapbox** - Modern styling and animations
-- **Strava** - Route planning and visualization
+- **Modern mobile apps** - Touch-first design principles
 
-### 📚 Educational Resources
-- **Introduction to Algorithms (CLRS)** - Algorithm theory foundation
-- **MDN Web Docs** - JavaScript and web API references
-- **Leaflet Documentation** - Mapping library guidance
-- **OpenStreetMap Wiki** - Mapping data understanding
-
-## 📞 Support and Community
+## 📞 Support
 
 ### 🆘 Getting Help
+- **GitHub Issues**: Bug reports and feature requests
+- **Documentation**: This comprehensive README
+- **Code Comments**: Inline documentation in source files
 
-#### Documentation
-```
-1. Read this README thoroughly
-2. Check the inline code comments
-3. Review the flowchart for understanding
-4. Test with the provided examples
-```
-
-#### Community Support
-```
-- GitHub Issues: Bug reports and feature requests
-- GitHub Discussions: General questions and ideas
-- Stack Overflow: Technical programming questions
-- OpenStreetMap Community: Mapping-related questions
-```
-
-#### Reporting Issues
-```
+### 🐛 Reporting Issues
 When reporting bugs, please include:
-1. Browser and version
-2. Operating system
-3. Steps to reproduce
-4. Expected vs actual behavior
-5. Console error messages
-6. Screenshots if applicable
-```
-
-### 🔮 Future Roadmap
-
-#### Version 2.0 (Planned)
-```
-- A* algorithm implementation
-- Offline functionality
-- Route export/import
-- Advanced preferences
-- Performance dashboard
-```
-
-#### Version 3.0 (Vision)
-```
-- Real-time traffic integration
-- Multi-modal transportation
-- Collaborative route planning
-- Mobile app version
-- API for third-party integration
-```
+1. **Device and browser information**
+2. **Screen size and orientation**
+3. **Steps to reproduce the issue**
+4. **Expected vs actual behavior**
+5. **Console error messages**
+6. **Screenshots if applicable**
 
 ---
 
 ## 🎉 Quick Start Summary
 
-1. **Download** or clone the repository
-2. **Open** `index.html` in your browser
-3. **Enter** start and end locations
-4. **Add** waypoints if desired
-5. **Run** Dijkstra's algorithm
-6. **Explore** the results and directions
-7. **Toggle** between light and dark themes
-8. **Enjoy** learning about pathfinding algorithms!
+1. **Open** `index.html` in your browser
+2. **Set theme** preference (light/dark)
+3. **Enter** start and end locations using search
+4. **Add waypoints** if desired using search functionality
+5. **Click** "Run Dijkstra's Algorithm" to see the route
+6. **View** turn-by-turn directions in the bottom panel
+7. **On mobile**: Tap ☰ to access sidebar controls
 
 **Built with ❤️ for education, exploration, and the joy of pathfinding algorithms**
 
 ---
 
-*Last updated: 2025 | Version 1.0 | MIT License*
+*Last updated: 2025 | Fully Responsive & Mobile-Optimized*
