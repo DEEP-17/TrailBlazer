@@ -15,7 +15,15 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeEventListeners();
     initializeAutocomplete();
     initializeToggleControls();
+    initializeMobileSidebar();
 });
+
+function initializeMobileSidebar() {
+    const isMobile = window.innerWidth <= 768;
+    if (isMobile && !isSidebarCollapsed) {
+        toggleSidebar();
+    }
+}
 
 function initializeToggleControls() {
     document.getElementById('sidebarToggle').addEventListener('click', function() {
@@ -31,17 +39,31 @@ function toggleSidebar() {
     const controlPanel = document.getElementById('controlPanel');
     const appTitle = document.querySelector('.app-title');
     const directionsPanel = document.getElementById('directionsPanel');
+    const mobileOverlay = document.getElementById('mobileOverlay');
+    const isMobile = window.innerWidth <= 768;
     
     isSidebarCollapsed = !isSidebarCollapsed;
     
-    if (isSidebarCollapsed) {
-        controlPanel.classList.add('collapsed');
-        appTitle.style.opacity = '0';
-        directionsPanel.style.left = 'var(--sidebar-collapsed-width)';
+    if (isMobile) {
+        if (isSidebarCollapsed) {
+            controlPanel.style.transform = 'translateX(-100%)';
+            appTitle.style.opacity = '0';
+            mobileOverlay.classList.remove('show');
+        } else {
+            controlPanel.style.transform = 'translateX(0)';
+            appTitle.style.opacity = '1';
+            mobileOverlay.classList.add('show');
+        }
     } else {
-        controlPanel.classList.remove('collapsed');
-        appTitle.style.opacity = '1';
-        directionsPanel.style.left = 'var(--sidebar-width)';
+        if (isSidebarCollapsed) {
+            controlPanel.classList.add('collapsed');
+            appTitle.style.opacity = '0';
+            directionsPanel.style.left = 'var(--sidebar-collapsed-width)';
+        } else {
+            controlPanel.classList.remove('collapsed');
+            appTitle.style.opacity = '1';
+            directionsPanel.style.left = 'var(--sidebar-width)';
+        }
     }
     
     setTimeout(() => {
@@ -50,6 +72,86 @@ function toggleSidebar() {
         }
     }, 300);
 }
+
+function handleMobileLayout() {
+    const isMobile = window.innerWidth <= 768;
+    const controlPanel = document.getElementById('controlPanel');
+    const directionsPanel = document.getElementById('directionsPanel');
+    
+    if (isMobile) {
+        if (isSidebarCollapsed) {
+            controlPanel.style.transform = 'translateX(-100%)';
+            controlPanel.style.position = 'fixed';
+            controlPanel.style.zIndex = '1001';
+            controlPanel.style.height = '100vh';
+            controlPanel.style.top = '0';
+            controlPanel.style.left = '0';
+            controlPanel.style.width = '100%';
+            controlPanel.style.maxWidth = '350px';
+        } else {
+            controlPanel.style.transform = 'translateX(0)';
+            controlPanel.style.position = 'fixed';
+            controlPanel.style.zIndex = '1001';
+            controlPanel.style.height = '100vh';
+            controlPanel.style.top = '0';
+            controlPanel.style.left = '0';
+            controlPanel.style.width = '100%';
+            controlPanel.style.maxWidth = '350px';
+        }
+        
+        directionsPanel.style.left = '0';
+    } else {
+        controlPanel.style.transform = '';
+        controlPanel.style.position = '';
+        controlPanel.style.zIndex = '';
+        controlPanel.style.height = '';
+        controlPanel.style.top = '';
+        controlPanel.style.left = '';
+        controlPanel.style.width = '';
+        controlPanel.style.maxWidth = '';
+        
+        const sidebarWidth = isSidebarCollapsed ? 'var(--sidebar-collapsed-width)' : 'var(--sidebar-width)';
+        directionsPanel.style.left = sidebarWidth;
+    }
+}
+
+window.addEventListener('resize', function() {
+    const wasCollapsed = isSidebarCollapsed;
+    handleMobileLayout();
+    
+    const isMobile = window.innerWidth <= 768;
+    if (isMobile && !wasCollapsed) {
+        isSidebarCollapsed = false;
+        toggleSidebar();
+    } else if (!isMobile && wasCollapsed) {
+        const controlPanel = document.getElementById('controlPanel');
+        controlPanel.style.transform = '';
+    }
+    
+    if (map) {
+        setTimeout(() => {
+            map.invalidateSize();
+        }, 100);
+    }
+});
+
+window.addEventListener('orientationchange', function() {
+    setTimeout(() => {
+        const wasCollapsed = isSidebarCollapsed;
+        handleMobileLayout();
+        
+        const isMobile = window.innerWidth <= 768;
+        if (isMobile && !wasCollapsed) {
+            isSidebarCollapsed = false;
+            toggleSidebar();
+        }
+        
+        if (map) {
+            map.invalidateSize();
+        }
+    }, 500);
+}
+)
 
 function toggleDirections() {
     const directionsPanel = document.getElementById('directionsPanel');
@@ -71,6 +173,12 @@ function toggleDirections() {
 function initializeMap() {
     map = L.map('map').setView([40.7128, -74.0060], 13);
     updateMapTiles();
+
+    map.on('resize', function() {
+        setTimeout(() => {
+            map.invalidateSize();
+        }, 100);
+    });
 
     map.on('click', function(e) {
         if (isAddingWaypoint) {
@@ -108,6 +216,12 @@ function initializeEventListeners() {
         runPathfindingAlgorithm();
     });
 
+    document.getElementById('mobileOverlay').addEventListener('click', function() {
+        if (window.innerWidth <= 768 && !isSidebarCollapsed) {
+            toggleSidebar();
+        }
+    });
+
     document.getElementById('currentLocation').addEventListener('click', function() {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
@@ -139,7 +253,7 @@ function initializeEventListeners() {
     });
 
     document.getElementById('travelMode').addEventListener('change', function() {
-        if (routingControl) {
+        if (routingControl && currentAlgorithm) {
             updateRoute();
         }
     });
@@ -156,7 +270,7 @@ async function runPathfindingAlgorithm() {
 
     try {
         await new Promise(resolve => setTimeout(resolve, 1500));
-        await runDijkstra();
+        updateRoute();
         showStatusMessage('Dijkstra\'s algorithm completed successfully', 'success');
     } catch (error) {
         showStatusMessage(`Error running Dijkstra's algorithm: ${error.message}`, 'error');
@@ -165,9 +279,6 @@ async function runPathfindingAlgorithm() {
     }
 }
 
-async function runDijkstra() {
-    updateRoute();
-}
 
 function toggleWaypointSearch() {
     const searchContainer = document.getElementById('waypointSearchContainer');
@@ -207,15 +318,13 @@ async function setStartPoint(latlng) {
         const locationName = await reverseGeocode(latlng[0], latlng[1]);
         startPoint.locationName = locationName;
         document.getElementById("startAddress").value = locationName;
-        
-        if (endPoint) {
-            updateRoute();
-        }
     } catch (error) {
         console.error('Error getting location name:', error);
         startPoint.locationName = `${latlng[0].toFixed(4)}, ${latlng[1].toFixed(4)}`;
         document.getElementById("startAddress").value = startPoint.locationName;
     }
+    
+    updateDijkstraButton();
 }
 
 async function setEndPoint(latlng) {
@@ -231,15 +340,13 @@ async function setEndPoint(latlng) {
         const locationName = await reverseGeocode(latlng[0], latlng[1]);
         endPoint.locationName = locationName;
         document.getElementById("endAddress").value = locationName;
-        
-        if (startPoint) {
-            updateRoute();
-        }
     } catch (error) {
         console.error('Error getting location name:', error);
         endPoint.locationName = `${latlng[0].toFixed(4)}, ${latlng[1].toFixed(4)}`;
         document.getElementById("endAddress").value = endPoint.locationName;
     }
+    
+    updateDijkstraButton();
 }
 
 async function addWaypoint(latlng) {
@@ -249,7 +356,9 @@ async function addWaypoint(latlng) {
     }).addTo(map);
 
     waypoint.on('dragend', function() {
-        updateRoute();
+        if (currentAlgorithm) {
+            updateRoute();
+        }
         updateWaypointList();
     });
 
@@ -264,20 +373,14 @@ async function addWaypoint(latlng) {
 
     waypoints.push(waypoint);
     updateWaypointList();
-    
-    if (startPoint && endPoint) {
-        updateRoute();
-    }
+    updateDijkstraButton();
 }
 
 function clearWaypoints() {
     waypoints.forEach(wp => map.removeLayer(wp));
     waypoints = [];
     updateWaypointList();
-    
-    if (startPoint && endPoint) {
-        updateRoute();
-    }
+    updateDijkstraButton();
 }
 
 function updateWaypointList() {
@@ -299,15 +402,27 @@ function updateWaypointList() {
     });
 }
 
+function updateDijkstraButton() {
+    const dijkstraBtn = document.getElementById('dijkstra');
+    const hasRoute = startPoint && endPoint;
+    
+    dijkstraBtn.disabled = !hasRoute;
+    
+    if (hasRoute) {
+        dijkstraBtn.style.opacity = '1';
+        dijkstraBtn.style.cursor = 'pointer';
+    } else {
+        dijkstraBtn.style.opacity = '0.5';
+        dijkstraBtn.style.cursor = 'not-allowed';
+    }
+}
+
 function removeWaypoint(index) {
     if (index >= 0 && index < waypoints.length) {
         map.removeLayer(waypoints[index]);
         waypoints.splice(index, 1);
         updateWaypointList();
-        
-        if (startPoint && endPoint) {
-            updateRoute();
-        }
+        updateDijkstraButton();
     }
 }
 
