@@ -33,6 +33,12 @@ function initializeToggleControls() {
     document.getElementById('directionsToggle').addEventListener('click', function() {
         toggleDirections();
     });
+
+    document.getElementById('mobileOverlay').addEventListener('click', function() {
+        if (window.innerWidth <= 768 && !isSidebarCollapsed) {
+            toggleSidebar();
+        }
+    });
 }
 
 function toggleSidebar() {
@@ -49,10 +55,12 @@ function toggleSidebar() {
             controlPanel.style.transform = 'translateX(-100%)';
             appTitle.style.opacity = '0';
             mobileOverlay.classList.remove('show');
+            mobileOverlay.style.display = 'none';
         } else {
             controlPanel.style.transform = 'translateX(0)';
             appTitle.style.opacity = '1';
             mobileOverlay.classList.add('show');
+            mobileOverlay.style.display = 'block';
         }
     } else {
         if (isSidebarCollapsed) {
@@ -141,9 +149,10 @@ window.addEventListener('orientationchange', function() {
         handleMobileLayout();
         
         const isMobile = window.innerWidth <= 768;
-        if (isMobile && !wasCollapsed) {
-            isSidebarCollapsed = false;
-            toggleSidebar();
+            const mobileOverlay = document.getElementById('mobileOverlay');
+            mobileOverlay.style.display = 'none';
+            mobileOverlay.classList.remove('show');
+        if (!isMobile && wasCollapsed) {
         }
         
         if (map) {
@@ -214,12 +223,6 @@ function updateMapTiles() {
 function initializeEventListeners() {
     document.getElementById('dijkstra').addEventListener('click', () => {
         runPathfindingAlgorithm();
-    });
-
-    document.getElementById('mobileOverlay').addEventListener('click', function() {
-        if (window.innerWidth <= 768 && !isSidebarCollapsed) {
-            toggleSidebar();
-        }
     });
 
     document.getElementById('currentLocation').addEventListener('click', function() {
