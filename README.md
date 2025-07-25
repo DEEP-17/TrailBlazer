@@ -102,9 +102,8 @@ flowchart TD
     
     M --> T{✅ Valid Route Points?}
     T -->|No| U[❌ Show Error Message]
-    T -->|Yes| V[🛣️ Calculate Real Route via OSRM]
+    T -->|Yes| W[📊 Create Graph from Route Points]
     
-    V --> W[📊 Create Graph from Route Points]
     W --> X[🔗 Generate Nodes and Edges]
     X --> Y[📏 Calculate Haversine Distances]
     Y --> Z[🧠 Dijkstra's Algorithm Execution]
@@ -118,7 +117,8 @@ flowchart TD
     EE -->|No| BB
     EE -->|Yes| FF[🛤️ Reconstruct Optimal Path]
     
-    FF --> GG[📍 Display Route on Map]
+    FF --> V[🛣️ Calculate Real Route via OSRM]
+    V --> GG[📍 Display Route on Map]
     GG --> HH[📋 Show Turn-by-Turn Directions]
     HH --> II[📊 Update Route Statistics]
     II --> JJ[✅ Algorithm Complete]
@@ -137,12 +137,13 @@ flowchart TD
     NN --> G
     OO --> G
     U --> G
-    
+
     style A fill:#e1f5fe
     style Z fill:#f3e5f5
     style FF fill:#e8f5e8
     style JJ fill:#fff3e0
     style MM fill:#fce4ec
+
 ```
 
 ## 🎮 Detailed Usage Guide
